@@ -1,5 +1,6 @@
 package com.service.servicecoupon.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -10,12 +11,12 @@ public class ClientPointAccumulationHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long clientPointAccumulationHistoryId;
-    private long pointPolicyId;
+    @ManyToOne
+    @JoinColumn(name = "point_policy_id")
+    private PointPolicy pointPolicy;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime clientPointAccumulationHistoryDatetime;
     private Integer clientPointAccumulationAmount;
-    @OneToMany
-    @JoinColumn(name = "point_type_id")
-    private List<PointType> pointType;
     private long clientId;
 
 
