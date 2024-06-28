@@ -1,4 +1,4 @@
-package com.service.servicecoupon.config;
+package com.service.point.config;
 
 
 import io.swagger.v3.oas.models.OpenAPI;

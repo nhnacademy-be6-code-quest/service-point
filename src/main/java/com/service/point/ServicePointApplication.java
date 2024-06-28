@@ -1,4 +1,4 @@
-package com.service.servicecoupon;
+package com.service.point;
 
 
 

@@ -1,10 +1,9 @@
-package com.service.servicecoupon.domain.entity;
+package com.service.point.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 public class ClientPointAccumulationHistory {

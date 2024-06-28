@@ -1,8 +1,6 @@
-package com.service.servicecoupon.service;
+package com.service.point.service;
 
 public interface ClientPointAccumulationHistoryService {
 
-    save
-    delete
-            findbyClientId();
+
 }

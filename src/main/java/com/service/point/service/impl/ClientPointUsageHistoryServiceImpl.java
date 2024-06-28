@@ -1,4 +1,4 @@
-package com.service.servicecoupon.service.impl;
+package com.service.point.service.impl;
 
 public class ClientPointUsageHistoryServiceImpl {
 }
