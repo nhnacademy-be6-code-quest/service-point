@@ -1,34 +1,35 @@
 package com.service.point.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.service.point.domain.PointPolicyType;
+import com.service.point.domain.PointStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 @Entity
-@Data
+@Getter
 @NoArgsConstructor
 public class PointPolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long pointPolicyId;
-    private String pointPolicyName;
-    private Integer pointPolicyAccumulationRate;
-    private Integer pointPolicyAccumulationAmount;
+    private PointPolicyType pointPolicyType;
+    private Integer pointValue;
     private LocalDate pointPolicyCreationDate;
+    @Setter
     private LocalDate pointPolicyExpirationDate;
+    @Setter
+    private PointStatus pointStatus;
 
-    public PointPolicy(String pointPolicyName, Integer pointPolicyAccumulationRate, Integer pointPolicyAccumulationAmount
-    ) {
-        this.pointPolicyName = pointPolicyName;
-        this.pointPolicyAccumulationRate = pointPolicyAccumulationRate;
-        this.pointPolicyAccumulationAmount = pointPolicyAccumulationAmount;
-        this.pointPolicyCreationDate = LocalDate.now();
+    public PointPolicy(PointPolicyType pointPolicyType, Integer pointValue) {
+        this.pointPolicyCreationDate=LocalDate.now();
+        this.pointStatus=PointStatus.ACTIVATE;
+        this.pointValue = pointValue;
+        this.pointPolicyType = pointPolicyType;
     }
 }
