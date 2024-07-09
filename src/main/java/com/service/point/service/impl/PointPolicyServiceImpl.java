@@ -5,19 +5,18 @@ import com.service.point.domain.entity.PointPolicy;
 import com.service.point.domain.request.PointPolicyRegisterRequestDto;
 import com.service.point.repository.PointPolicyRepository;
 import com.service.point.service.PointPolicyService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
     @Service
-    public class PointPolicyServiceImpl implements PointPolicyService {
+    @RequiredArgsConstructor
+    public class PointPolicyServiceImpl  {
 
-        @Autowired
-        private PointPolicyRepository pointPolicyRepository;
+        private final PointPolicyRepository pointPolicyRepository;
 
-        public void addPointPolicy(PointPolicyRegisterRequestDto pointPolicyRegisterRequestDto) {
+        public void savePointPolicy(PointPolicyRegisterRequestDto pointPolicyRegisterRequestDto) {
             // 현재 유효한 정책을 조회
             PointPolicy currentPolicy = pointPolicyRepository.findByPointPolicyNameAndPointPolicyExpirationDateIsNull(pointPolicyRegisterRequestDto.getPointPolicyName());
             if (currentPolicy != null) {

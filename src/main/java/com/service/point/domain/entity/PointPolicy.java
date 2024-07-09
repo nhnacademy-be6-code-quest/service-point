@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDate;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,16 +21,14 @@ public class PointPolicy {
     private String pointPolicyName;
     private Integer pointPolicyAccumulationRate;
     private Integer pointPolicyAccumulationAmount;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime pointPolicyCreationDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime pointPolicyExpirationDate;
+    private LocalDate pointPolicyCreationDate;
+    private LocalDate pointPolicyExpirationDate;
 
     public PointPolicy(String pointPolicyName, Integer pointPolicyAccumulationRate, Integer pointPolicyAccumulationAmount
     ) {
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyAccumulationRate = pointPolicyAccumulationRate;
         this.pointPolicyAccumulationAmount = pointPolicyAccumulationAmount;
-        this.pointPolicyCreationDate = LocalDateTime.now();
+        this.pointPolicyCreationDate = LocalDate.now();
     }
 }
