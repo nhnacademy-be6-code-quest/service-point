@@ -5,6 +5,10 @@ GET http://localhost:8010/api/point/adminPage/reward?page=0&size=1
 GET http://localhost:8010/api/point/myPage/use?page=0&size=1
 X-User-Id:26
 
+
+###GET
+GET localhost:8010/api/point/policy?page=0&size=1
+
 ###POST
 POST http://localhost:8010/api/point/order
 Content-Type: application/json
