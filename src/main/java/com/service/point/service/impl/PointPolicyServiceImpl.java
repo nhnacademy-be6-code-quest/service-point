@@ -48,8 +48,10 @@ public class PointPolicyServiceImpl implements PointPolicyService {
             PointPolicyAdminListResponseDto dto = new PointPolicyAdminListResponseDto();
             dto.setPointPolicyType(pointPolicy.getPointPolicyType().getValue());
             dto.setPointValue(pointPolicy.getPointValue());
+            dto.setPointPolicyId(pointPolicy.getPointPolicyId());
             dto.setPointPolicyCreationDate(
                 String.valueOf(pointPolicy.getPointPolicyCreationDate()));
+            dto.setPointStatus(pointPolicy.getPointStatus().getValue());
             return dto;
         });
     }
