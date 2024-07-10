@@ -1,4 +1,8 @@
-### GET request to example server
-GET localhost:8006/admin/coupon/type
+### Post
+POST localhost:8010/api/point/order
+Content-Type: application/json
+X-User-Id:181
 
-###
+{
+  "accumulatedPoint": 1000000
+}

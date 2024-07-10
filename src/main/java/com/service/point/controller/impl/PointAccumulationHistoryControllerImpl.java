@@ -1,7 +1,7 @@
 package com.service.point.controller.impl;
 
-import com.service.point.dto.request.PointPolicyOrderRequestDto;
-import com.service.point.dto.request.PointRefundRequestDto;
+import com.service.point.dto.request.PointRewardOrderRequestDto;
+import com.service.point.dto.request.PointRewardRefundRequestDto;
 import com.service.point.exception.ClientNotFoundException;
 import com.service.point.exception.PointPolicyNotFoundException;
 import com.service.point.service.impl.PointAccumulationHistoryServiceImpl;
@@ -23,9 +23,9 @@ public class PointAccumulationHistoryControllerImpl {
 
     @PostMapping("/api/point/order")
     public ResponseEntity<String> rewardOrderPoint(@RequestHeader HttpHeaders headers,
-        PointPolicyOrderRequestDto pointPolicyOrderRequestDto) {
+        @RequestBody PointRewardOrderRequestDto pointRewardOrderRequestDto) {
         try {
-            pointAccumulationHistoryService.orderPoint(headers, pointPolicyOrderRequestDto);
+            pointAccumulationHistoryService.orderPoint(headers, pointRewardOrderRequestDto);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.ACCEPTED);
@@ -45,9 +45,9 @@ public class PointAccumulationHistoryControllerImpl {
 
     @PostMapping("/api/point/refund")
     public ResponseEntity<String> rewardRefundPoint(@RequestHeader HttpHeaders headers, @RequestBody
-    PointRefundRequestDto pointRefundRequestDto) {
+    PointRewardRefundRequestDto pointRewardRefundRequestDto) {
         try {
-            pointAccumulationHistoryService.refundPoint(headers, pointRefundRequestDto);
+            pointAccumulationHistoryService.refundPoint(headers, pointRewardRefundRequestDto);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.ACCEPTED);

@@ -5,8 +5,8 @@ import com.service.point.config.MemberShipMessageDto;
 import com.service.point.domain.PointPolicyType;
 import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;
-import com.service.point.dto.request.PointPolicyOrderRequestDto;
-import com.service.point.dto.request.PointRefundRequestDto;
+import com.service.point.dto.request.PointRewardOrderRequestDto;
+import com.service.point.dto.request.PointRewardRefundRequestDto;
 import com.service.point.exception.ClientNotFoundException;
 import com.service.point.exception.PointPolicyNotFoundException;
 import com.service.point.exception.RabbitMessageConvertException;
@@ -33,7 +33,7 @@ public class PointAccumulationHistoryServiceImpl {
     private final ObjectMapper objectMapper;
 
     public void orderPoint(HttpHeaders headers,
-        PointPolicyOrderRequestDto pointPolicyOrderResponseDto) {
+        PointRewardOrderRequestDto pointPolicyOrderResponseDto) {
         if (headers.getFirst(ID_HEADER) == null) {
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
@@ -85,7 +85,7 @@ public class PointAccumulationHistoryServiceImpl {
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
 
-    public void refundPoint(HttpHeaders headers, PointRefundRequestDto pointRefundRequestDto) {
+    public void refundPoint(HttpHeaders headers, PointRewardRefundRequestDto pointRewardRefundRequestDto) {
         if (headers.getFirst(ID_HEADER) == null) {
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
@@ -96,7 +96,7 @@ public class PointAccumulationHistoryServiceImpl {
         }
         long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
-            pointPolicy, clientId, pointRefundRequestDto.getAccumulatedPoint());
+            pointPolicy, clientId, pointRewardRefundRequestDto.getAccumulatedPoint());
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
 }

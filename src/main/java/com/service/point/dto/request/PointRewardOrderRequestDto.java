@@ -1,13 +1,12 @@
 package com.service.point.dto.request;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
-public class PointUsageRefundRequestDto {
-    Integer pointUsagePayment;
+public class PointRewardOrderRequestDto {
+    Integer accumulatedPoint;
 }

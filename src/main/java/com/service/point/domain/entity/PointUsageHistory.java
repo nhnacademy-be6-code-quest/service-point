@@ -15,7 +15,7 @@ public class PointUsageHistory {
 
     @Id
     private long pointUsageHistoryId;
-    private LocalDate pointUsageHistoryDatetime;
+    private LocalDate pointUsageHistoryDate;
     private Integer pointUsageAmount;
     @ManyToOne
     @JoinColumn(name = "pointUsageTypeId")
@@ -24,7 +24,7 @@ public class PointUsageHistory {
 
     public PointUsageHistory(Integer pointUsageAmount, PointUsageType pointUsageType,
         long clientId) {
-        this.pointUsageHistoryDatetime=LocalDate.now();
+        this.pointUsageHistoryDate=LocalDate.now();
         this.pointUsageAmount = pointUsageAmount;
         this.pointUsageType = pointUsageType;
         this.clientId = clientId;
