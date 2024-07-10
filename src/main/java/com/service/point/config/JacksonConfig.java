@@ -18,6 +18,8 @@ public class JacksonConfig implements WebMvcConfigurer {
         return objectMapper;
     }
 
+
+
     @Bean
     public PageableHandlerMethodArgumentResolverCustomizer customize() {
         return p -> p.setOneIndexedParameters(true);
