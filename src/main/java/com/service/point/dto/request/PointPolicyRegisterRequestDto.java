@@ -1,10 +1,12 @@
 package com.service.point.dto.request;
 
 import com.service.point.domain.PointPolicyType;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Builder
+@NoArgsConstructor
+@Setter
 @Getter
 public class PointPolicyRegisterRequestDto {
 

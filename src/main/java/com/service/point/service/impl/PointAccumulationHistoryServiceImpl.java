@@ -5,18 +5,29 @@ import com.service.point.config.MemberShipMessageDto;
 import com.service.point.domain.PointPolicyType;
 import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;
+import com.service.point.domain.entity.PointUsageHistory;
+import com.service.point.domain.entity.PointUsageType;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
 import com.service.point.dto.request.PointRewardRefundRequestDto;
+import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
+import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
+import com.service.point.dto.response.PointUsageMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
 import com.service.point.exception.PointPolicyNotFoundException;
+import com.service.point.exception.PointTypeNotFoundException;
 import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
+import com.service.point.service.PointAccumulationHistoryService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,13 +36,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class PointAccumulationHistoryServiceImpl {
+public class PointAccumulationHistoryServiceImpl implements PointAccumulationHistoryService {
 
     private final PointAccumulationHistoryRepository pointAccumulationHistoryRepository;
     private static final String ID_HEADER = "X-User-Id";
     private final PointPolicyRepository pointPolicyRepository;
     private final ObjectMapper objectMapper;
-
+    @Override
     public void orderPoint(HttpHeaders headers,
         PointRewardOrderRequestDto pointPolicyOrderResponseDto) {
         if (headers.getFirst(ID_HEADER) == null) {
@@ -49,6 +60,7 @@ public class PointAccumulationHistoryServiceImpl {
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
 
+    @Override
     public void reviewPoint(HttpHeaders headers) {
         if (headers.getFirst(ID_HEADER) == null) {
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
@@ -65,9 +77,10 @@ public class PointAccumulationHistoryServiceImpl {
     }
 
     @RabbitListener(queues = "${rabbit.login.queue.name}")
+    @Override
     public void memberShipPoint(String message) {
         MemberShipMessageDto memberShipMessageDto;
-        log.error("{}",message);
+        log.error("{}", message);
         try {
             memberShipMessageDto = objectMapper.readValue(message, MemberShipMessageDto.class);
         } catch (IOException e) {
@@ -84,8 +97,9 @@ public class PointAccumulationHistoryServiceImpl {
             memberShipMessageDto.getClientId(), pointPolicy.getPointValue());
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
-
-    public void refundPoint(HttpHeaders headers, PointRewardRefundRequestDto pointRewardRefundRequestDto) {
+    @Override
+    public void refundPoint(HttpHeaders headers,
+        PointRewardRefundRequestDto pointRewardRefundRequestDto) {
         if (headers.getFirst(ID_HEADER) == null) {
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
@@ -98,5 +112,52 @@ public class PointAccumulationHistoryServiceImpl {
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
             pointPolicy, clientId, pointRewardRefundRequestDto.getAccumulatedPoint());
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
+    }
+    @Override
+    public Page<PointAccumulationMyPageResponseDto> rewardClientPoint(HttpHeaders headers, int page,
+        int size) {
+        if (headers.getFirst(ID_HEADER) == null) {
+            throw new ClientNotFoundException("유저가 존재하지 않습니다.");
+        }
+        PageRequest pageRequest = PageRequest.of(page, size,
+            Sort.by(Direction.DESC, "PointAccumulationHistoryDate"));
+        long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
+        Page<PointAccumulationHistory> pointAccumulationHistories = pointAccumulationHistoryRepository.findByClientId(
+            clientId, pageRequest);
+        return pointAccumulationHistories.map(points -> {
+            PointAccumulationMyPageResponseDto pointAccumulationMyPageResponseDto = new PointAccumulationMyPageResponseDto();
+            PointPolicy pointPolicy = pointPolicyRepository.findById(
+                    points.getPointPolicy().getPointPolicyId())
+                .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+            pointAccumulationMyPageResponseDto.setPointAccumulationHistoryDate(
+                String.valueOf(points.getPointAccumulationHistoryDate()));
+            pointAccumulationMyPageResponseDto.setPointAccumulationType(
+                pointPolicy.getPointPolicyType().name());
+            pointAccumulationMyPageResponseDto.setPointAccumulationAmount(
+                points.getPointAccumulationAmount());
+            return pointAccumulationMyPageResponseDto;
+        });
+    }
+    @Override
+    public Page<PointAccumulationAdminPageResponseDto> rewardUserPoint(int page, int size) {
+
+        PageRequest pageRequest = PageRequest.of(page, size,
+            Sort.by(Direction.DESC, "PointAccumulationHistoryDate"));
+        Page<PointAccumulationHistory> pointAccumulationHistories = pointAccumulationHistoryRepository.findAll(
+            pageRequest);
+        return pointAccumulationHistories.map(points -> {
+            PointAccumulationAdminPageResponseDto pointAccumulationAdminPageResponseDto = new PointAccumulationAdminPageResponseDto();
+            PointPolicy pointPolicy = pointPolicyRepository.findById(
+                    points.getPointPolicy().getPointPolicyId())
+                .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+            pointAccumulationAdminPageResponseDto.setPointAccumulationHistoryDate(
+                String.valueOf(points.getPointAccumulationHistoryDate()));
+            pointAccumulationAdminPageResponseDto.setPointAccumulationType(
+                pointPolicy.getPointPolicyType().name());
+            pointAccumulationAdminPageResponseDto.setClientId(points.getClientId());
+            pointAccumulationAdminPageResponseDto.setPointAccumulationAmount(
+                points.getPointAccumulationAmount());
+            return pointAccumulationAdminPageResponseDto;
+        });
     }
 }

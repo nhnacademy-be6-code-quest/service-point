@@ -11,8 +11,6 @@ public interface PointAccumulationHistoryRepository extends JpaRepository<PointA
     @Query("SELECT SUM(p.pointAccumulationAmount) FROM PointAccumulationHistory p WHERE p.clientId = :clientId")
     Integer findTotalPointsByClientId(@Param("clientId") long clientId);
 
-    Page<PointAccumulationHistory> findAll(Pageable pageable);
-
     Page<PointAccumulationHistory> findByClientId(long clientId, Pageable pageable);
 
 

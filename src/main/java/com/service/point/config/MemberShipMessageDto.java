@@ -8,5 +8,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberShipMessageDto implements Serializable {
     private Long clientId;
-
 }
