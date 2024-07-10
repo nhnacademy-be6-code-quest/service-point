@@ -1,21 +1,32 @@
 package com.service.point.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
+@Getter
 public class PointUsageHistory {
 
     @Id
-    private long clientPointUsageHistoryId;
+    private long pointUsageHistoryId;
+    private LocalDate pointUsageHistoryDatetime;
+    private Integer pointUsageAmount;
+    @ManyToOne
+    @JoinColumn(name = "pointUsageTypeId")
+    private PointUsageType pointUsageType;
     private long clientId;
-    private long paymentId;
-    private LocalDate clientPointUsageHistoryDatetime;
-    private Integer clientPointUsageAmount;
 
-
+    public PointUsageHistory(Integer pointUsageAmount, PointUsageType pointUsageType,
+        long clientId) {
+        this.pointUsageHistoryDatetime=LocalDate.now();
+        this.pointUsageAmount = pointUsageAmount;
+        this.pointUsageType = pointUsageType;
+        this.clientId = clientId;
+    }
 }

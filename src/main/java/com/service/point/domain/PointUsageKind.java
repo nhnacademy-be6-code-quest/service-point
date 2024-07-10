@@ -1,12 +1,12 @@
 package com.service.point.domain;
 
-public enum PointPolicyType {
-  REVIEW(0,"리뷰"),MEMBERSHIP(1,"회원가입"),REFUND(2,"환불"),PAYMENT(3,"결제");
+public enum PointUsageKind {
+    PAYMENT(0, "결재"), REFUND(1, "환불");
 
     private final int code;
     private final String value;
 
-    PointPolicyType(int code, String value) {
+    PointUsageKind(int code, String value) {
         this.code = code;
         this.value = value;
     }
@@ -19,8 +19,8 @@ public enum PointPolicyType {
         return value;
     }
 
-    public static PointPolicyType fromCode(int code) {
-        for (PointPolicyType type : PointPolicyType.values()) {
+    public static PointUsageKind fromCode(int code) {
+        for (PointUsageKind type : PointUsageKind.values()) {
             if (type.code == code) {
                 return type;
             }
@@ -28,8 +28,8 @@ public enum PointPolicyType {
         throw new IllegalArgumentException("Invalid DiscountType code: " + code);
     }
 
-    public static PointPolicyType fromValue(String value) {
-        for (PointPolicyType type : PointPolicyType.values()) {
+    public static PointUsageKind fromValue(String value) {
+        for (PointUsageKind type : PointUsageKind.values()) {
             if (type.value.equals(value)) {
                 return type;
             }
@@ -37,3 +37,5 @@ public enum PointPolicyType {
         throw new IllegalArgumentException("Invalid DiscountType value: " + value);
     }
 }
+
+

@@ -1,10 +1,13 @@
 package com.service.point.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -15,13 +18,14 @@ public class PointAccumulationHistory {
     @ManyToOne
     @JoinColumn(name = "point_policy_id")
     private PointPolicy pointPolicy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime clientPointAccumulationHistoryDatetime;
     private long clientId;
+    private LocalDate PointAccumulationHistoryDate;
+    private Integer pointAccumulationAmount;
 
-    public PointAccumulationHistory(PointPolicy pointPolicy, long clientId){
-        this.clientPointAccumulationHistoryDatetime = LocalDateTime.now();
+    public PointAccumulationHistory(PointPolicy pointPolicy, long clientId, Integer pointAccumulationAmount) {
         this.pointPolicy = pointPolicy;
         this.clientId = clientId;
+        this.PointAccumulationHistoryDate=LocalDate.now();
+        this.pointAccumulationAmount=pointAccumulationAmount;
     }
 }

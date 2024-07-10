@@ -48,6 +48,7 @@ import org.springframework.stereotype.Service;
         }
 
 
+
         public void deletePointPolicy(long pointPolicyId){
             PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId).orElseThrow(()->
                 new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
