@@ -21,13 +21,13 @@ public class PointAccumulationHistory {
     @JoinColumn(name = "point_policy_id")
     private PointPolicy pointPolicy;
     private long clientId;
-    private LocalDate PointAccumulationHistoryDate;
+    private LocalDate pointAccumulationHistoryDate;
     private Integer pointAccumulationAmount;
 
     public PointAccumulationHistory(PointPolicy pointPolicy, long clientId, Integer pointAccumulationAmount) {
         this.pointPolicy = pointPolicy;
         this.clientId = clientId;
-        this.PointAccumulationHistoryDate=LocalDate.now();
+        this.pointAccumulationHistoryDate=LocalDate.now();
         this.pointAccumulationAmount=pointAccumulationAmount;
     }
 }

@@ -132,7 +132,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             pointAccumulationMyPageResponseDto.setPointAccumulationHistoryDate(
                 String.valueOf(points.getPointAccumulationHistoryDate()));
             pointAccumulationMyPageResponseDto.setPointAccumulationType(
-                pointPolicy.getPointPolicyType().name());
+                pointPolicy.getPointPolicyType().getValue());
             pointAccumulationMyPageResponseDto.setPointAccumulationAmount(
                 points.getPointAccumulationAmount());
             return pointAccumulationMyPageResponseDto;
@@ -153,7 +153,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             pointAccumulationAdminPageResponseDto.setPointAccumulationHistoryDate(
                 String.valueOf(points.getPointAccumulationHistoryDate()));
             pointAccumulationAdminPageResponseDto.setPointAccumulationType(
-                pointPolicy.getPointPolicyType().name());
+                pointPolicy.getPointPolicyType().getValue());
             pointAccumulationAdminPageResponseDto.setClientId(points.getClientId());
             pointAccumulationAdminPageResponseDto.setPointAccumulationAmount(
                 points.getPointAccumulationAmount());

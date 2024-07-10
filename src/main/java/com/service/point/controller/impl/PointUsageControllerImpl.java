@@ -5,7 +5,7 @@ import com.service.point.dto.request.PointUsagePaymentRequestDto;
 import com.service.point.dto.request.PointUsageRefundRequestDto;
 import com.service.point.dto.response.PointUsageAdminPageResponseDto;
 import com.service.point.dto.response.PointUsageMyPageResponseDto;
-import com.service.point.service.impl.PointUsageHistoryServiceImpl;
+import com.service.point.service.PointUsageHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PointUsageControllerImpl implements PointUsageController {
 
-    private final PointUsageHistoryServiceImpl pointUsageHistoryService;
+    private final PointUsageHistoryService pointUsageHistoryService;
 
     @PostMapping("/api/point/use/payment")
     @Override

@@ -2,8 +2,7 @@ package com.service.point.controller.impl;
 
 import com.service.point.controller.TotalPointController;
 import com.service.point.dto.response.TotalPointAmountResponseDto;
-import com.service.point.service.impl.TotalPointAmountServiceImpl;
-
+import com.service.point.service.TotalPointAmountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TotalPointControllerImpl implements TotalPointController {
 
-    private final TotalPointAmountServiceImpl totalPointAmountService;
+    private final TotalPointAmountService totalPointAmountService;
 
     @GetMapping("/api/point")
     @Override

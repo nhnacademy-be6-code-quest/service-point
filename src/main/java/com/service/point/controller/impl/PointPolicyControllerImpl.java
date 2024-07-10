@@ -3,7 +3,7 @@ package com.service.point.controller.impl;
 import com.service.point.controller.PointPolicyController;
 import com.service.point.dto.request.PointPolicyRegisterRequestDto;
 import com.service.point.dto.response.PointPolicyAdminListResponseDto;
-import com.service.point.service.impl.PointPolicyServiceImpl;
+import com.service.point.service.PointPolicyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PointPolicyControllerImpl implements PointPolicyController {
 
-    private final PointPolicyServiceImpl pointPolicyService;
+    private final PointPolicyService pointPolicyService;
 
     @PostMapping("/api/point/policy/register")
     @Override

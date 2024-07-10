@@ -7,7 +7,7 @@ import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
 import com.service.point.exception.PointPolicyNotFoundException;
-import com.service.point.service.impl.PointAccumulationHistoryServiceImpl;
+import com.service.point.service.PointAccumulationHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PointAccumulationHistoryControllerImpl implements PointAccumulationHistoryController {
 
-    private final PointAccumulationHistoryServiceImpl pointAccumulationHistoryService;
+    private final PointAccumulationHistoryService pointAccumulationHistoryService;
 
     @PostMapping("/api/point/order")
     @Override

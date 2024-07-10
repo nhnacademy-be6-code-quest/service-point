@@ -65,7 +65,7 @@ public class PointUsageHistoryServiceImpl implements PointUsageHistoryService {
             PointUsageType pointUsageType = pointUsageTypeRepository.findById(points.getPointUsageType().getPointUsageTypeId()).orElseThrow(()-> new PointTypeNotFoundException("포인트 타입을 찾을수 없습니다."));
             pointUsageMyPageResponseDto.setPointUsageHistoryDate(String.valueOf(points.getPointUsageHistoryDate()));
             pointUsageMyPageResponseDto.setPointUsageAmount(points.getPointUsageAmount());
-            pointUsageMyPageResponseDto.setPointUsageType(pointUsageType.getPointUsageKind().name());
+            pointUsageMyPageResponseDto.setPointUsageType(pointUsageType.getPointUsageKind().getValue());
             return pointUsageMyPageResponseDto;
         });
     }
@@ -80,7 +80,7 @@ public class PointUsageHistoryServiceImpl implements PointUsageHistoryService {
             pointUsageAdminPageResponseDto.setPointUsageHistoryDate(String.valueOf(points.getPointUsageHistoryDate()));
             pointUsageAdminPageResponseDto.setClientId(points.getClientId());
             pointUsageAdminPageResponseDto.setPointUsageAmount(points.getPointUsageAmount());
-            pointUsageAdminPageResponseDto.setPointUsageType(pointUsageType.getPointUsageKind().name());
+            pointUsageAdminPageResponseDto.setPointUsageType(pointUsageType.getPointUsageKind().getValue());
             return pointUsageAdminPageResponseDto;
         });
     }
