@@ -1,20 +1,18 @@
 package com.service.point.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.point.client.UserNameClient;
 import com.service.point.config.MemberShipMessageDto;
 import com.service.point.domain.PointPolicyType;
 import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;
-import com.service.point.domain.entity.PointUsageHistory;
-import com.service.point.domain.entity.PointUsageType;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
 import com.service.point.dto.request.PointRewardRefundRequestDto;
+import com.service.point.dto.response.ClientNameResponseDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
-import com.service.point.dto.response.PointUsageMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
 import com.service.point.exception.PointPolicyNotFoundException;
-import com.service.point.exception.PointTypeNotFoundException;
 import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
@@ -38,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class PointAccumulationHistoryServiceImpl implements PointAccumulationHistoryService {
 
+    private final UserNameClient userNameClient;
     private final PointAccumulationHistoryRepository pointAccumulationHistoryRepository;
     private static final String ID_HEADER = "X-User-Id";
     private final PointPolicyRepository pointPolicyRepository;
@@ -150,11 +149,13 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             PointPolicy pointPolicy = pointPolicyRepository.findById(
                     points.getPointPolicy().getPointPolicyId())
                 .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+            ClientNameResponseDto clientNameResponseDto = userNameClient.getClientName(points.getClientId()).getBody();
+
             pointAccumulationAdminPageResponseDto.setPointAccumulationHistoryDate(
                 String.valueOf(points.getPointAccumulationHistoryDate()));
             pointAccumulationAdminPageResponseDto.setPointAccumulationType(
                 pointPolicy.getPointPolicyType().getValue());
-            pointAccumulationAdminPageResponseDto.setClientId(points.getClientId());
+            pointAccumulationAdminPageResponseDto.setClientName(clientNameResponseDto.getClientName());
             pointAccumulationAdminPageResponseDto.setPointAccumulationAmount(
                 points.getPointAccumulationAmount());
             return pointAccumulationAdminPageResponseDto;
