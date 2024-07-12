@@ -74,7 +74,7 @@ public class PointAccumulationHistoryControllerImpl implements PointAccumulation
             pointAccumulationHistoryService.deletePoint(pointAccumulationHistoryId);
             return new ResponseEntity<>("success",HttpStatus.OK);
         } catch (Exception e){
-            return new ResponseEntity<>("fail",HttpStatus.ACCEPTED);
+            return new ResponseEntity<>("fail",HttpStatus.BAD_REQUEST);
         }
     }
 

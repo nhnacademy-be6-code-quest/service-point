@@ -9,5 +9,5 @@ import lombok.Setter;
 @Getter
 public class PointPolicyActiveRequestDto {
     long pointPolicyId;
-    String pointPolicyType;
+    String pointAccumulationType;
 }

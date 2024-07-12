@@ -17,9 +17,7 @@ public class TotalPointControllerImpl implements TotalPointController {
 
     @GetMapping("/api/point")
     @Override
-    public TotalPointAmountResponseDto findPoint(@RequestHeader HttpHeaders headers){
+    public TotalPointAmountResponseDto findPoint(@RequestHeader HttpHeaders headers) {
         return totalPointAmountService.findPoint(headers);
     }
-
-
 }

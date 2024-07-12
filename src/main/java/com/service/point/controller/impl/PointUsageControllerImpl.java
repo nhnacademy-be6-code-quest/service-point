@@ -33,7 +33,7 @@ public class PointUsageControllerImpl implements PointUsageController {
             pointUsageHistoryService.usedPaymentPoint(pointUsagePaymentRequestDto, headers);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.ACCEPTED);
+            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -46,19 +46,21 @@ public class PointUsageControllerImpl implements PointUsageController {
             pointUsageHistoryService.usedRefundPoint(pointUsageRefundRequestDto, headers);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.ACCEPTED);
+            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/api/point/myPage/use")
     @Override
-    public ResponseEntity<Page<PointUsageMyPageResponseDto>> usedClientPoint(@RequestHeader HttpHeaders headers, @RequestParam int page, @RequestParam int size){
+    public ResponseEntity<Page<PointUsageMyPageResponseDto>> usedClientPoint(
+        @RequestHeader HttpHeaders headers, @RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(pointUsageHistoryService.useClientPoint(headers, page, size));
     }
 
     @GetMapping("/api/point/adminPage/use")
     @Override
-    public ResponseEntity<Page<PointUsageAdminPageResponseDto>> usedUserPoint(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<Page<PointUsageAdminPageResponseDto>> usedUserPoint(
+        @RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(pointUsageHistoryService.useUserPoint(page, size));
     }
 }
