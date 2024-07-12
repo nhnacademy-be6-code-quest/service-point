@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.point.client.UserNameClient;
 import com.service.point.config.MemberShipMessageDto;
 import com.service.point.config.ReviewMessageDto;
-import com.service.point.domain.PointPolicyType;
 import com.service.point.domain.PointStatus;
 import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;

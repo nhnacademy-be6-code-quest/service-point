@@ -44,7 +44,7 @@ public class PointPolicyControllerImpl implements PointPolicyController {
     public ResponseEntity<PointPolicyDetailResponseDto> findPointPolicy (@PathVariable long pointPolicyId){
         return ResponseEntity.ok(pointPolicyService.findPointPolicy(pointPolicyId));
     }
-    @PutMapping
+    @PutMapping("/api/point/policy/modify")
     public ResponseEntity<String> modifyPointPolicy(@RequestBody PointPolicyModifyRequestDto pointPolicyModifyRequestDto){
         try {
             pointPolicyService.modifyPointPolicy(pointPolicyModifyRequestDto);
@@ -53,7 +53,7 @@ public class PointPolicyControllerImpl implements PointPolicyController {
             return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
         }
     }
-    @PutMapping
+    @PutMapping("/api/point/policy/active")
     public ResponseEntity<String> pointPolicyActive(@RequestBody PointPolicyActiveRequestDto pointPolicyActiveRequestDto){
         try {
             pointPolicyService.pointPolicyActive(pointPolicyActiveRequestDto);

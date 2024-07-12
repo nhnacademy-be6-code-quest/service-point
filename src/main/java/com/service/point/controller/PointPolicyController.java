@@ -87,7 +87,7 @@ public interface PointPolicyController {
             )
         }
     )
-    @PostMapping("/api/point/policy/modify")
+    @PutMapping("/api/point/policy/modify")
     ResponseEntity<String> modifyPointPolicy(
         @Parameter(description = "포인트정책 아이디, 포인트양")
         @RequestBody PointPolicyModifyRequestDto pointPolicyModifyRequestDto);
@@ -106,7 +106,7 @@ public interface PointPolicyController {
             )
         }
     )
-    @PostMapping("/api/point/policy/active")
+    @PutMapping("/api/point/policy/active")
     @Parameter(description = "포인트정책 아이디, 포인트적립타입")
     ResponseEntity<String> pointPolicyActive(@RequestBody PointPolicyActiveRequestDto pointPolicyActiveRequestDto);
 }
