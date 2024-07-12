@@ -18,7 +18,8 @@ public class PointPolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long pointPolicyId;
-    private PointPolicyType pointPolicyType;
+    private String pointPolicyType;
+    @Setter
     private Integer pointValue;
     private LocalDate pointPolicyCreationDate;
     @Setter
@@ -26,9 +27,9 @@ public class PointPolicy {
     @Setter
     private PointStatus pointStatus;
 
-    public PointPolicy(PointPolicyType pointPolicyType, Integer pointValue) {
+    public PointPolicy(String pointPolicyType, Integer pointValue) {
         this.pointPolicyCreationDate=LocalDate.now();
-        this.pointStatus=PointStatus.ACTIVATE;
+        this.pointStatus=PointStatus.DISABLED;
         this.pointValue = pointValue;
         this.pointPolicyType = pointPolicyType;
     }

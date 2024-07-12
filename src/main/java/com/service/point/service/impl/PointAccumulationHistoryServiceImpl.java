@@ -3,7 +3,9 @@ package com.service.point.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.point.client.UserNameClient;
 import com.service.point.config.MemberShipMessageDto;
+import com.service.point.config.ReviewMessageDto;
 import com.service.point.domain.PointPolicyType;
+import com.service.point.domain.PointStatus;
 import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
@@ -41,6 +43,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
     private static final String ID_HEADER = "X-User-Id";
     private final PointPolicyRepository pointPolicyRepository;
     private final ObjectMapper objectMapper;
+
     @Override
     public void orderPoint(HttpHeaders headers,
         PointRewardOrderRequestDto pointPolicyOrderResponseDto) {
@@ -48,8 +51,8 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
 
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointPolicyTypeAndPointPolicyExpirationDateIsNull(
-            PointPolicyType.PAYMENT);
+        PointPolicy pointPolicy = pointPolicyRepository.findByPointPolicyTypeContainingAndPointStatus(
+            "주문", PointStatus.ACTIVATE);
         if (pointPolicy == null) {
             throw new PointPolicyNotFoundException("포인트 정책이 존재하지않습니다.");
         }
@@ -60,18 +63,31 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
     }
 
     @Override
-    public void reviewPoint(HttpHeaders headers) {
-        if (headers.getFirst(ID_HEADER) == null) {
-            throw new ClientNotFoundException("유저가 존재하지 않습니다.");
+    @RabbitListener(queues = "${rabbit.review.queue.name}")
+    public void reviewPoint(String message) {
+        ReviewMessageDto reviewMessageDto;
+        PointPolicy pointPolicy;
+        log.error("{}", message);
+        try {
+            reviewMessageDto = objectMapper.readValue(message, ReviewMessageDto.class);
+        } catch (IOException e) {
+            throw new RabbitMessageConvertException("회원가입 유저 메세지 변환에 실패했습니다.");
         }
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointPolicyTypeAndPointPolicyExpirationDateIsNull(
-            PointPolicyType.REVIEW);
-        if (pointPolicy == null) {
-            throw new PointPolicyNotFoundException("포인트 정책이 존재하지 않습니다.");
+        if (reviewMessageDto.getHasImage()) {
+            pointPolicy = pointPolicyRepository.findByPointPolicyTypeContainingAndPointStatus(
+                "사진리뷰",
+                PointStatus.ACTIVATE);
+            if (pointPolicy == null) {
+                throw new PointPolicyNotFoundException("포인트 정책이 존재하지 않습니다.");
+            }
+
+        } else {
+            pointPolicy = pointPolicyRepository.findByPointPolicyTypeContainingAndPointStatus("리뷰",
+                PointStatus.ACTIVATE);
         }
-        long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
+
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
-            pointPolicy, clientId, pointPolicy.getPointValue());
+            pointPolicy, reviewMessageDto.getClientId(), pointPolicy.getPointValue());
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
 
@@ -85,8 +101,8 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
         } catch (IOException e) {
             throw new RabbitMessageConvertException("회원가입 유저 메세지 변환에 실패했습니다.");
         }
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointPolicyTypeAndPointPolicyExpirationDateIsNull(
-            PointPolicyType.MEMBERSHIP);
+        PointPolicy pointPolicy = pointPolicyRepository.findByPointPolicyTypeContainingAndPointStatus("회원가입",PointStatus.ACTIVATE
+            );
 
         if (pointPolicy == null) {
             throw new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다.");
@@ -96,14 +112,14 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             memberShipMessageDto.getClientId(), pointPolicy.getPointValue());
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
+
     @Override
     public void refundPoint(HttpHeaders headers,
         PointRewardRefundRequestDto pointRewardRefundRequestDto) {
         if (headers.getFirst(ID_HEADER) == null) {
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointPolicyTypeAndPointPolicyExpirationDateIsNull(
-            PointPolicyType.REFUND);
+        PointPolicy pointPolicy = pointPolicyRepository.findByPointPolicyTypeContainingAndPointStatus("환불", PointStatus.ACTIVATE);
         if (pointPolicy == null) {
             throw new PointPolicyNotFoundException("포인트 정책이 존재하지 않습니다.");
         }
@@ -112,6 +128,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             pointPolicy, clientId, pointRewardRefundRequestDto.getAccumulatedPoint());
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
+
     @Override
     public Page<PointAccumulationMyPageResponseDto> rewardClientPoint(HttpHeaders headers, int page,
         int size) {
@@ -131,12 +148,13 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             pointAccumulationMyPageResponseDto.setPointAccumulationHistoryDate(
                 String.valueOf(points.getPointAccumulationHistoryDate()));
             pointAccumulationMyPageResponseDto.setPointAccumulationType(
-                pointPolicy.getPointPolicyType().getValue());
+                pointPolicy.getPointPolicyType());
             pointAccumulationMyPageResponseDto.setPointAccumulationAmount(
                 points.getPointAccumulationAmount());
             return pointAccumulationMyPageResponseDto;
         });
     }
+
     @Override
     public Page<PointAccumulationAdminPageResponseDto> rewardUserPoint(int page, int size) {
 
@@ -149,16 +167,23 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             PointPolicy pointPolicy = pointPolicyRepository.findById(
                     points.getPointPolicy().getPointPolicyId())
                 .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
-            ClientNameResponseDto clientNameResponseDto = userNameClient.getClientName(points.getClientId()).getBody();
+            ClientNameResponseDto clientNameResponseDto = userNameClient.getClientName(
+                points.getClientId()).getBody();
 
             pointAccumulationAdminPageResponseDto.setPointAccumulationHistoryDate(
                 String.valueOf(points.getPointAccumulationHistoryDate()));
             pointAccumulationAdminPageResponseDto.setPointAccumulationType(
-                pointPolicy.getPointPolicyType().getValue());
-            pointAccumulationAdminPageResponseDto.setClientName(clientNameResponseDto.getClientName());
+                pointPolicy.getPointPolicyType());
+            pointAccumulationAdminPageResponseDto.setClientName(
+                clientNameResponseDto.getClientName());
             pointAccumulationAdminPageResponseDto.setPointAccumulationAmount(
                 points.getPointAccumulationAmount());
             return pointAccumulationAdminPageResponseDto;
         });
+    }
+
+    @Override
+    public void deletePoint(long pointAccumulationHistoryId) {
+        pointPolicyRepository.deleteById(pointAccumulationHistoryId);
     }
 }

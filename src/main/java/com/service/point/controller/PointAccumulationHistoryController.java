@@ -40,21 +40,6 @@ public interface PointAccumulationHistoryController {
         @RequestBody PointRewardOrderRequestDto pointRewardOrderRequestDto);
 
     @Operation(
-        summary = "리뷰 작성시 포인트 적립",
-        description = "Review - 사용자 포인트 적립",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "success"
-            )
-        }
-    )
-    @PostMapping("/api/point/review")
-    ResponseEntity<String> rewardReviewPoint(
-        @Parameter(description = "포인트를 적립하는 회원의 아이디")
-        @RequestHeader HttpHeaders headers);
-
-    @Operation(
         summary = "환불시 포인트 적립",
         description = "Refund - 사용자 포인트 적립",
         responses = {

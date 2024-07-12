@@ -2,10 +2,10 @@ package com.service.point.config;
 
 import java.io.Serializable;
 import lombok.Getter;
-import org.springframework.stereotype.Service;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Service
+@NoArgsConstructor
 public class MemberShipMessageDto implements Serializable {
     private Long clientId;
 }

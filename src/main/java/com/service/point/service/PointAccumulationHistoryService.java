@@ -11,8 +11,7 @@ public interface PointAccumulationHistoryService {
     void orderPoint(HttpHeaders headers,
         PointRewardOrderRequestDto pointPolicyOrderResponseDto);
 
-    void reviewPoint(HttpHeaders headers);
-
+    void reviewPoint(String message);
     void memberShipPoint(String message);
 
     void refundPoint(HttpHeaders headers,
@@ -22,4 +21,7 @@ public interface PointAccumulationHistoryService {
         int size);
 
     Page<PointAccumulationAdminPageResponseDto> rewardUserPoint(int page, int size);
-}
+
+    void deletePoint(long pointAccumulationHistoryId);
+
+    }
