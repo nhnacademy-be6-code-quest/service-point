@@ -42,8 +42,22 @@ public class RabbitConfig {
     }
 
     @Bean
-    Binding reviewPointBinding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(reviewPointRoutingKey);
+    DirectExchange loginPointExchange() {
+        return new DirectExchange(signupPointExchangeName);
+    }
+
+    @Bean
+    Queue loginPointQueue() {
+        return new Queue(signupPointQueueName);
+    }
+
+    @Bean
+    Binding loginPointBinding() {
+        return BindingBuilder.bind(loginPointQueue()).to(loginPointExchange()).with(signupPointRoutingKey);
+    }
+    @Bean
+    Binding reviewPointBinding() {
+        return BindingBuilder.bind(reviewPointQueue()).to(reviewPointExchange()).with(reviewPointRoutingKey);
     }
 //dlx
     @Bean

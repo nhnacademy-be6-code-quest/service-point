@@ -50,8 +50,8 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
 
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeContainingAndPointStatus(
-            "주문", PointStatus.ACTIVATE);
+        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus(
+            "결제", PointStatus.ACTIVATE);
         if (pointPolicy == null) {
             throw new PointPolicyNotFoundException("포인트 정책이 존재하지않습니다.");
         }
@@ -65,7 +65,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
     @RabbitListener(queues = "${rabbit.review.queue.name}")
     public void reviewPoint(String message) {
         ReviewMessageDto reviewMessageDto;
-        PointPolicy pointPolicy;
+
 
         try {
             reviewMessageDto = objectMapper.readValue(message, ReviewMessageDto.class);
@@ -73,25 +73,32 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
         } catch (IOException e) {
             throw new RabbitMessageConvertException("회원가입 유저 메세지 변환에 실패했습니다.");
         }
-        if (reviewMessageDto.getHasImage()) {
-            pointPolicy = pointPolicyRepository.findByPointAccumulationTypeContainingAndPointStatus(
+        if (reviewMessageDto.isHasImage()) {
+           PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus(
                 "사진리뷰",
                 PointStatus.ACTIVATE);
             if (pointPolicy == null) {
                 throw new PointPolicyNotFoundException("포인트 정책이 존재하지 않습니다.");
             }
+            PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
+                pointPolicy, reviewMessageDto.getClientId(), pointPolicy.getPointValue());
+            pointAccumulationHistoryRepository.save(pointAccumulationHistory);
+            log.error("{}",pointPolicy.getPointValue());
 
         } else {
-
-            pointPolicy = pointPolicyRepository.findByPointAccumulationTypeContainingAndPointStatus("리뷰",
+            PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("리뷰",
                 PointStatus.ACTIVATE);
+            if (pointPolicy == null) {
+                throw new PointPolicyNotFoundException("포인트 정책이 존재하지 않습니다.");
+            }
+            PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
+                pointPolicy, reviewMessageDto.getClientId(), pointPolicy.getPointValue());
+            pointAccumulationHistoryRepository.save(pointAccumulationHistory);
             log.error("{}",pointPolicy.getPointValue());
+
         }
 
-        PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
-            pointPolicy, reviewMessageDto.getClientId(), pointPolicy.getPointValue());
-        pointAccumulationHistoryRepository.save(pointAccumulationHistory);
-        log.error("{}",pointPolicy.getPointValue());
+
     }
 
     @RabbitListener(queues = "${rabbit.login.queue.name}")
@@ -104,7 +111,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
         } catch (IOException e) {
             throw new RabbitMessageConvertException("회원가입 유저 메세지 변환에 실패했습니다.");
         }
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeContainingAndPointStatus("회원가입",PointStatus.ACTIVATE
+        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("회원가입",PointStatus.ACTIVATE
             );
 
         if (pointPolicy == null) {
@@ -122,7 +129,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
         if (headers.getFirst(ID_HEADER) == null) {
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeContainingAndPointStatus("환불", PointStatus.ACTIVATE);
+        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("환불", PointStatus.ACTIVATE);
         if (pointPolicy == null) {
             throw new PointPolicyNotFoundException("포인트 정책이 존재하지 않습니다.");
         }

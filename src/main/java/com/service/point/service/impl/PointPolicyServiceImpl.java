@@ -71,7 +71,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
     @Override
     public void pointPolicyActive(PointPolicyActiveRequestDto pointPolicyActiveRequestDto) {
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeContainingAndPointStatus(
+        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus(
             pointPolicyActiveRequestDto.getPointAccumulationType(),
             PointStatus.ACTIVATE);
         pointPolicy.setPointStatus(PointStatus.DISABLED);

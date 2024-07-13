@@ -12,5 +12,5 @@ import lombok.ToString;
 @ToString
 public class ReviewMessageDto {
     private Long clientId;
-    private Boolean hasImage;
+    private boolean hasImage;
 }
