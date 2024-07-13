@@ -5,9 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@Getter
 @Setter
-public class TotalPointAmountResponseDto {
-    Integer totalPoint;
-    Integer pointAccumulationRate;
+@Getter
+public class PointPolicyDetailResponseDto {
+    Integer pointValue;
 }

@@ -11,5 +11,5 @@ public class PointAccumulationAdminPageResponseDto {
     Integer pointAccumulationAmount;
     String pointAccumulationHistoryDate;
     String pointAccumulationType;
-    long clientId;
+    String clientName;
 }

@@ -7,8 +7,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class PointPolicyRegisterRequestDto {
-
-    private String pointAccumulationType;
-    private Integer pointValue;
+public class PointPolicyActiveRequestDto {
+    long pointPolicyId;
+    String pointAccumulationType;
 }

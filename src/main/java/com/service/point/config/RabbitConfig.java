@@ -24,19 +24,40 @@ public class RabbitConfig {
     @Value("${rabbit.login.routing.key}")
     private String signupPointRoutingKey;
 
+
+    @Value("${rabbit.review.exchange.name}")
+    private String reviewPointExchangeName;
+    @Value("${rabbit.review.queue.name}")
+    private String reviewPointQueueName;
+    @Value("${rabbit.review.routing.key}")
+    private String reviewPointRoutingKey;
     @Bean
-    DirectExchange signupPointExchange() {
+    DirectExchange reviewPointExchange() {
+        return new DirectExchange(reviewPointExchangeName);
+    }
+
+    @Bean
+    Queue reviewPointQueue() {
+        return new Queue(reviewPointQueueName);
+    }
+
+    @Bean
+    DirectExchange loginPointExchange() {
         return new DirectExchange(signupPointExchangeName);
     }
 
     @Bean
-    Queue signupCPointQueue() {
+    Queue loginPointQueue() {
         return new Queue(signupPointQueueName);
     }
 
     @Bean
-    Binding signupPointBinding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(signupPointRoutingKey);
+    Binding loginPointBinding() {
+        return BindingBuilder.bind(loginPointQueue()).to(loginPointExchange()).with(signupPointRoutingKey);
+    }
+    @Bean
+    Binding reviewPointBinding() {
+        return BindingBuilder.bind(reviewPointQueue()).to(reviewPointExchange()).with(reviewPointRoutingKey);
     }
 //dlx
     @Bean

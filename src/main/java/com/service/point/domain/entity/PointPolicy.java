@@ -1,6 +1,5 @@
 package com.service.point.domain.entity;
 
-import com.service.point.domain.PointPolicyType;
 import com.service.point.domain.PointStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +17,8 @@ public class PointPolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long pointPolicyId;
-    private PointPolicyType pointPolicyType;
+    private String pointAccumulationType;
+    @Setter
     private Integer pointValue;
     private LocalDate pointPolicyCreationDate;
     @Setter
@@ -26,10 +26,10 @@ public class PointPolicy {
     @Setter
     private PointStatus pointStatus;
 
-    public PointPolicy(PointPolicyType pointPolicyType, Integer pointValue) {
+    public PointPolicy(String pointAccumulationType, Integer pointValue) {
         this.pointPolicyCreationDate=LocalDate.now();
-        this.pointStatus=PointStatus.ACTIVATE;
+        this.pointStatus=PointStatus.DISABLED;
         this.pointValue = pointValue;
-        this.pointPolicyType = pointPolicyType;
+        this.pointAccumulationType = pointAccumulationType;
     }
 }
