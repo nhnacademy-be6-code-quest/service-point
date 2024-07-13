@@ -81,13 +81,16 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             }
 
         } else {
+
             pointPolicy = pointPolicyRepository.findByPointAccumulationTypeContainingAndPointStatus("리뷰",
                 PointStatus.ACTIVATE);
+            log.error("{}",pointPolicy.getPointValue());
         }
 
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
             pointPolicy, reviewMessageDto.getClientId(), pointPolicy.getPointValue());
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
+        log.error("{}",pointPolicy.getPointValue());
     }
 
     @RabbitListener(queues = "${rabbit.login.queue.name}")

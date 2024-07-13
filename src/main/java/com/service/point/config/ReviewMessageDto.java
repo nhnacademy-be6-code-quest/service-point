@@ -1,13 +1,14 @@
 package com.service.point.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class ReviewMessageDto {
-    Long clientId;
-    Boolean hasImage;
+    private Long clientId;
+    private Boolean hasImage;
 }
