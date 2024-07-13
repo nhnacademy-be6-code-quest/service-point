@@ -66,9 +66,10 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
     public void reviewPoint(String message) {
         ReviewMessageDto reviewMessageDto;
         PointPolicy pointPolicy;
-        log.error("{}", message);
+
         try {
             reviewMessageDto = objectMapper.readValue(message, ReviewMessageDto.class);
+            log.error("{}", reviewMessageDto);
         } catch (IOException e) {
             throw new RabbitMessageConvertException("회원가입 유저 메세지 변환에 실패했습니다.");
         }
