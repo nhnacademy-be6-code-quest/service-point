@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PointPolicyRepository extends JpaRepository<PointPolicy, Long> {
-    PointPolicy findByPointPolicyTypeContainingAndPointStatus(
+    PointPolicy findByPointAccumulationTypeContainingAndPointStatus(
         String pointPolicyType, PointStatus pointStatus);
 
     Page<PointPolicy> findByPointValueIsNotNull(Pageable pageable);

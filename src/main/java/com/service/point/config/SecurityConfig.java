@@ -32,19 +32,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req.anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new HeaderFilter(List.of(
-
-                                new HeaderFilter.RouteConfig(URI.create("/api/point/order"), HttpMethod.POST.name(), Collections.emptyList()),
-                                new HeaderFilter.RouteConfig(URI.create("/api/point/refund"), HttpMethod.POST.name(), Collections.emptyList()),
-                                new HeaderFilter.RouteConfig(URI.create("/api/point/policy/register"), HttpMethod.POST.name(), List.of(ADMIN_ROLE)),
-                                new HeaderFilter.RouteConfig(URI.create("/api/point/policy"), HttpMethod.GET.name(), List.of(ADMIN_ROLE)),
-                                new HeaderFilter.RouteConfig(URI.create("/api/point/policy/{pointPolicyId}"), HttpMethod.GET.name(), List.of(ADMIN_ROLE)),
-                    new HeaderFilter.RouteConfig(URI.create("/api/point/policy/modify"), HttpMethod.PUT.name(), List.of(ADMIN_ROLE)),
-                    new HeaderFilter.RouteConfig(URI.create("/api/point/policy/active"), HttpMethod.PUT.name(), List.of(ADMIN_ROLE)),
-                    new HeaderFilter.RouteConfig(URI.create("/api/point/use/payment"), HttpMethod.POST.name(), Collections.emptyList()),
-                    new HeaderFilter.RouteConfig(URI.create("/api/point/use/refund"), HttpMethod.POST.name(), Collections.emptyList()),
-                    new HeaderFilter.RouteConfig(URI.create("/api/point/myPage/use"), HttpMethod.GET.name(), Collections.emptyList()),
-                    new HeaderFilter.RouteConfig(URI.create("/api/point/adminPage/use"), HttpMethod.GET.name(), List.of(ADMIN_ROLE)),
-                    new HeaderFilter.RouteConfig(URI.create("/api/point"), HttpMethod.GET.name(), Collections.emptyList())
+//
+//                                new HeaderFilter.RouteConfig(URI.create("/api/point/order"), HttpMethod.POST.name(), Collections.emptyList()),
+//                                new HeaderFilter.RouteConfig(URI.create("/api/point/refund"), HttpMethod.POST.name(), Collections.emptyList()),
+//                                new HeaderFilter.RouteConfig(URI.create("/api/point/policy/register"), HttpMethod.POST.name(), List.of(ADMIN_ROLE)),
+//                                new HeaderFilter.RouteConfig(URI.create("/api/point/policy"), HttpMethod.GET.name(), List.of(ADMIN_ROLE)),
+//                                new HeaderFilter.RouteConfig(URI.create("/api/point/policy/{pointPolicyId}"), HttpMethod.GET.name(), List.of(ADMIN_ROLE)),
+//                    new HeaderFilter.RouteConfig(URI.create("/api/point/policy/modify"), HttpMethod.PUT.name(), List.of(ADMIN_ROLE)),
+//                    new HeaderFilter.RouteConfig(URI.create("/api/point/policy/active"), HttpMethod.PUT.name(), List.of(ADMIN_ROLE)),
+//                    new HeaderFilter.RouteConfig(URI.create("/api/point/use/payment"), HttpMethod.POST.name(), Collections.emptyList()),
+//                    new HeaderFilter.RouteConfig(URI.create("/api/point/use/refund"), HttpMethod.POST.name(), Collections.emptyList()),
+//                    new HeaderFilter.RouteConfig(URI.create("/api/point/myPage/use"), HttpMethod.GET.name(), Collections.emptyList()),
+//                    new HeaderFilter.RouteConfig(URI.create("/api/point/adminPage/use"), HttpMethod.GET.name(), List.of(ADMIN_ROLE)),
+//                    new HeaderFilter.RouteConfig(URI.create("/api/point"), HttpMethod.GET.name(), Collections.emptyList())
                         )
                 ), UsernamePasswordAuthenticationFilter.class);
 
