@@ -1,5 +1,6 @@
 package com.service.point.service.impl;
 
+import com.service.point.client.UserRankClient;
 import com.service.point.dto.response.TotalPointAmountResponseDto;
 import com.service.point.exception.ClientNotFoundException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
@@ -18,7 +19,7 @@ public class TotalPointAmountServiceImpl implements TotalPointAmountService {
     private final PointUsageHistoryRepository pointUsageHistoryRepository;
     private final PointPolicyRepository pointPolicyRepository;
     private static final String ID_HEADER = "X-User-Id";
-    //private final UserRankClient userRankClient;
+    private final UserRankClient userRankClient;
 
     @Override
     public TotalPointAmountResponseDto findPoint(HttpHeaders headers){
@@ -26,11 +27,10 @@ public class TotalPointAmountServiceImpl implements TotalPointAmountService {
             throw new ClientNotFoundException("유저를 찾을수 없습니다.");
         }
         long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER),-1L);
-        //long pointPolicyId = userRankClient.findUserRank(clientId).getBody();
+        long pointPolicyId = userRankClient.getClientGradeRate(clientId).getBody().getRatePolicyId();
         Integer usePointAmount =pointUsageHistoryRepository.findTotalPointsByClientId(clientId);
         Integer accumulationAmount = pointAccumulationHistoryRepository.findTotalPointsByClientId(clientId);
-        Integer pointRate =5;
-            //pointPolicyRepository.findbyId(pointPolicyId);
+        Integer pointRate = pointPolicyRepository.findById(pointPolicyId).get().getPointValue();
         if (usePointAmount ==null){
             usePointAmount=0;
         }
