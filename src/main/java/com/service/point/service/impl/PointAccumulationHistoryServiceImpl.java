@@ -101,7 +101,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
 
     }
 
-    @RabbitListener(queues = "${rabbit.login.queue.name}")
+    @RabbitListener(queues = "${rabbit.point.queue.name}")
     @Override
     public void memberShipPoint(String message) {
         MemberShipMessageDto memberShipMessageDto;
@@ -146,7 +146,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
         PageRequest pageRequest = PageRequest.of(page, size,
-            Sort.by(Direction.DESC, "PointAccumulationHistoryDate"));
+            Sort.by(Direction.ASC, "PointAccumulationHistoryDate"));
         long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
         Page<PointAccumulationHistory> pointAccumulationHistories = pointAccumulationHistoryRepository.findByClientId(
             clientId, pageRequest);

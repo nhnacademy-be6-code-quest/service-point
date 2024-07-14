@@ -40,10 +40,6 @@ public class PointPolicyControllerImpl implements PointPolicyController {
         return ResponseEntity.ok(pointPolicyService.getAllPointPolicies(page, size));
     }
 
-    @GetMapping("/api/point/policy/{pointPolicyId}")
-    public ResponseEntity<PointPolicyDetailResponseDto> findPointPolicy (@PathVariable long pointPolicyId){
-        return ResponseEntity.ok(pointPolicyService.findPointPolicy(pointPolicyId));
-    }
     @PutMapping("/api/point/policy/modify")
     public ResponseEntity<String> modifyPointPolicy(@RequestBody PointPolicyModifyRequestDto pointPolicyModifyRequestDto){
         try {

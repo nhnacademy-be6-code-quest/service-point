@@ -35,7 +35,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public Page<PointPolicyAdminListResponseDto> getAllPointPolicies(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size,
-            Sort.by("pointPolicyType").descending());
+            Sort.by("pointAccumulationType").descending());
         Page<PointPolicy> pointPolicies = pointPolicyRepository.findByPointValueIsNotNull(
             pageRequest);
         return pointPolicies.map(pointPolicy -> {
@@ -56,6 +56,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
             .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
         PointPolicyDetailResponseDto dto = new PointPolicyDetailResponseDto();
         dto.setPointValue(pointPolicy.getPointValue());
+        dto.setPointAccumulationType(pointPolicy.getPointAccumulationType());
         return dto;
     }
 
