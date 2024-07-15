@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name="userRank", url="localhost:8001/")
+@FeignClient(name="userRank", url="localhost:8001")
 public interface UserRankClient {
     @GetMapping("/api/client/grade")
     ResponseEntity<ClientGradeRateResponseDto> getClientGradeRate(@RequestParam Long clientId);
