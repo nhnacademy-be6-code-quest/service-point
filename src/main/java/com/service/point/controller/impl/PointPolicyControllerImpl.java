@@ -1,6 +1,7 @@
 package com.service.point.controller.impl;
 
 import com.service.point.controller.PointPolicyController;
+import com.service.point.dto.request.ClientPointAccumulationResponseDto;
 import com.service.point.dto.request.PointPolicyActiveRequestDto;
 import com.service.point.dto.request.PointPolicyModifyRequestDto;
 import com.service.point.dto.request.PointPolicyRegisterRequestDto;
@@ -60,4 +61,8 @@ public class PointPolicyControllerImpl implements PointPolicyController {
     }
 
 
+    @GetMapping("/api/point/policy/grade")
+    public ResponseEntity<ClientPointAccumulationResponseDto> clientPointAccumulation(@RequestParam long pointPolicyId){
+        return ResponseEntity.ok(pointPolicyService.findByAccumulation(pointPolicyId));
+    }
 }

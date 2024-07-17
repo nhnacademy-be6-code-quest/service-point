@@ -3,6 +3,7 @@ package com.service.point.service.impl;
 
 import com.service.point.domain.PointStatus;
 import com.service.point.domain.entity.PointPolicy;
+import com.service.point.dto.request.ClientPointAccumulationResponseDto;
 import com.service.point.dto.request.PointPolicyActiveRequestDto;
 import com.service.point.dto.request.PointPolicyModifyRequestDto;
 import com.service.point.dto.request.PointPolicyRegisterRequestDto;
@@ -82,6 +83,13 @@ public class PointPolicyServiceImpl implements PointPolicyService {
             .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
         pointPolicyActive.setPointStatus(PointStatus.ACTIVATE);
         pointPolicyRepository.save(pointPolicyActive);
+    }
+    @Override
+    public ClientPointAccumulationResponseDto findByAccumulation(long pointPolicyId) {
+        PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId).orElseThrow(()-> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+        ClientPointAccumulationResponseDto dto = new ClientPointAccumulationResponseDto();
+        dto.setPointValue(pointPolicy.getPointValue());
+        return dto;
     }
 }
 
