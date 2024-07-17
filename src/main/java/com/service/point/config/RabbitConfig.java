@@ -1,11 +1,14 @@
 package com.service.point.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -17,12 +20,16 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class RabbitConfig {
 
-    @Value("${rabbit.login.exchange.name}")
+    @Value("${rabbit.point.exchange.name}")
     private String signupPointExchangeName;
-    @Value("${rabbit.login.queue.name}")
+    @Value("${rabbit.point.queue.name}")
     private String signupPointQueueName;
-    @Value("${rabbit.login.routing.key}")
+    @Value("${rabbit.point.routing.key}")
     private String signupPointRoutingKey;
+    @Value("${rabbit.point.dlq.queue.name}")
+    private String signupDlqPointQueueName;
+    @Value("${rabbit.point.dlq.routing.key}")
+    private String signupDlqPointRoutingKey;
 
 
     @Value("${rabbit.review.exchange.name}")
@@ -31,6 +38,12 @@ public class RabbitConfig {
     private String reviewPointQueueName;
     @Value("${rabbit.review.routing.key}")
     private String reviewPointRoutingKey;
+    @Value("${rabbit.review.dlq.queue.name}")
+    private String reviewDlqPointQueueName;
+    @Value("${rabbit.review.dlq.routing.key}")
+    private String reviewDlqPointRoutingKey;
+
+
     @Bean
     DirectExchange reviewPointExchange() {
         return new DirectExchange(reviewPointExchangeName);
@@ -38,27 +51,50 @@ public class RabbitConfig {
 
     @Bean
     Queue reviewPointQueue() {
-        return new Queue(reviewPointQueueName);
-    }
-
+            return QueueBuilder.durable(reviewPointQueueName)
+                .withArgument("x-dead-letter-exchange", reviewPointExchangeName)
+                .withArgument("x-dead-letter-routing-key", reviewDlqPointRoutingKey)
+                .build();
+        }
     @Bean
-    DirectExchange loginPointExchange() {
-        return new DirectExchange(signupPointExchangeName);
-    }
-
-    @Bean
-    Queue loginPointQueue() {
-        return new Queue(signupPointQueueName);
-    }
-
-    @Bean
-    Binding loginPointBinding() {
-        return BindingBuilder.bind(loginPointQueue()).to(loginPointExchange()).with(signupPointRoutingKey);
+    Queue reviewDlqPointQueue() {
+        return new Queue(reviewDlqPointQueueName);
     }
     @Bean
     Binding reviewPointBinding() {
         return BindingBuilder.bind(reviewPointQueue()).to(reviewPointExchange()).with(reviewPointRoutingKey);
     }
+    @Bean
+    Binding reviewDlqPointBinding() {
+        return BindingBuilder.bind(reviewDlqPointQueue()).to(reviewPointExchange()).with(reviewDlqPointRoutingKey);
+    }
+
+    @Bean
+    DirectExchange signupPointExchange() {
+        return new DirectExchange(signupPointExchangeName);
+    }
+
+    @Bean
+    Queue signupPointQueue() {
+        return QueueBuilder.durable(signupPointQueueName)
+            .withArgument("x-dead-letter-exchange", signupPointExchangeName)
+            .withArgument("x-dead-letter-routing-key", signupDlqPointRoutingKey)
+            .build();
+    }
+    @Bean
+    Queue signupDlqPointQueue(){
+        return new Queue(signupDlqPointQueueName);
+    }
+
+    @Bean
+    Binding signupPointBinding() {
+        return BindingBuilder.bind(signupPointQueue()).to(signupPointExchange()).with(signupPointRoutingKey);
+    }
+    @Bean
+    Binding signupDlqPointBinding() {
+        return BindingBuilder.bind(signupDlqPointQueue()).to(signupPointExchange()).with(signupDlqPointRoutingKey);
+    }
+
 //dlx
     @Bean
     RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
@@ -67,5 +103,11 @@ public class RabbitConfig {
         return rabbitTemplate;
     }
 
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
+    }
 
 }

@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "userName", url = "localhost:8001")
+@FeignClient(name = "userName", url = "http://localhost:8001")
 public interface UserNameClient {
 
     @GetMapping("/api/client/name")

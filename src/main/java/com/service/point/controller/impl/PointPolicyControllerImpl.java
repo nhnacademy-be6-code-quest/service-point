@@ -1,6 +1,7 @@
 package com.service.point.controller.impl;
 
 import com.service.point.controller.PointPolicyController;
+import com.service.point.dto.request.ClientPointAccumulationResponseDto;
 import com.service.point.dto.request.PointPolicyActiveRequestDto;
 import com.service.point.dto.request.PointPolicyModifyRequestDto;
 import com.service.point.dto.request.PointPolicyRegisterRequestDto;
@@ -40,10 +41,6 @@ public class PointPolicyControllerImpl implements PointPolicyController {
         return ResponseEntity.ok(pointPolicyService.getAllPointPolicies(page, size));
     }
 
-    @GetMapping("/api/point/policy/{pointPolicyId}")
-    public ResponseEntity<PointPolicyDetailResponseDto> findPointPolicy (@PathVariable long pointPolicyId){
-        return ResponseEntity.ok(pointPolicyService.findPointPolicy(pointPolicyId));
-    }
     @PutMapping("/api/point/policy/modify")
     public ResponseEntity<String> modifyPointPolicy(@RequestBody PointPolicyModifyRequestDto pointPolicyModifyRequestDto){
         try {
@@ -64,4 +61,8 @@ public class PointPolicyControllerImpl implements PointPolicyController {
     }
 
 
+    @GetMapping("/api/point/policy/grade")
+    public ResponseEntity<ClientPointAccumulationResponseDto> clientPointAccumulation(@RequestParam long pointPolicyId){
+        return ResponseEntity.ok(pointPolicyService.findByAccumulation(pointPolicyId));
+    }
 }

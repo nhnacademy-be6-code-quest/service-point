@@ -37,7 +37,7 @@ public class PointAccumulationHistoryControllerImpl implements PointAccumulation
             pointAccumulationHistoryService.orderPoint(headers, pointRewardOrderRequestDto);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.ACCEPTED);
+            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST );
         }
     }
 
@@ -49,7 +49,7 @@ public class PointAccumulationHistoryControllerImpl implements PointAccumulation
             pointAccumulationHistoryService.refundPoint(headers, pointRewardRefundRequestDto);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.ACCEPTED);
+            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
         }
 
     }

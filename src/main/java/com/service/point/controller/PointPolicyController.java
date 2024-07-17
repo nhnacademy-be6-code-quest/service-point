@@ -54,24 +54,6 @@ public interface PointPolicyController {
         @Parameter(description = "페이지에 보여줄 개수")
         @RequestParam int size);
 
-    @Operation(
-        summary = "포인트 정책 조회",
-        description = "PointPolicy - 포인트 정책 조회",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "success"
-            ),
-            @ApiResponse(
-                responseCode = "400",
-                description = "fail"
-            )
-        }
-    )
-    @GetMapping("/api/point/policy/{pointPolicyId}")
-    ResponseEntity<PointPolicyDetailResponseDto> findPointPolicy (
-        @Parameter(description = "포인트정책 아이디")
-        @PathVariable long pointPolicyId);
 
     @Operation(
         summary = "포인트 정책 수정",

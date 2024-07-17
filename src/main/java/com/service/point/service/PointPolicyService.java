@@ -1,5 +1,6 @@
 package com.service.point.service;
 
+import com.service.point.dto.request.ClientPointAccumulationResponseDto;
 import com.service.point.dto.request.PointPolicyActiveRequestDto;
 import com.service.point.dto.request.PointPolicyModifyRequestDto;
 import com.service.point.dto.request.PointPolicyRegisterRequestDto;
@@ -50,4 +51,11 @@ public interface PointPolicyService {
      * @param pointPolicyActiveRequestDto 포인트 정책 활성화를 위한 Dto
      */
     void pointPolicyActive(PointPolicyActiveRequestDto pointPolicyActiveRequestDto);
-}
+
+
+
+
+
+    ClientPointAccumulationResponseDto findByAccumulation(long pointPolicyId);
+
+    }
