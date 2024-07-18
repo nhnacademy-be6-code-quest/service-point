@@ -12,6 +12,7 @@ import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +43,18 @@ public class RabbitConfig {
     private String reviewDlqPointQueueName;
     @Value("${rabbit.review.dlq.routing.key}")
     private String reviewDlqPointRoutingKey;
+
+
+    @Value("${rabbit.use.point.exchange.name}")
+    private String usePointExchangeName;
+    @Value("${rabbit.use.point.queue.name}")
+    private String usePointQueueName;
+    @Value("${rabbit.use.point.routing.name}")
+    private String usePointRoutingKey;
+    @Value("${rabbit.use.point.dlq.queue.name}")
+    private String usePointDlqQueueName;
+    @Value("${rabbit.use.point.dlq.routing.name}")
+    private String usePointDlqRoutingName;
 
 
     @Bean
@@ -81,6 +94,7 @@ public class RabbitConfig {
             .withArgument("x-dead-letter-routing-key", signupDlqPointRoutingKey)
             .build();
     }
+
     @Bean
     Queue signupDlqPointQueue(){
         return new Queue(signupDlqPointQueueName);
@@ -95,6 +109,35 @@ public class RabbitConfig {
         return BindingBuilder.bind(signupDlqPointQueue()).to(signupPointExchange()).with(signupDlqPointRoutingKey);
     }
 
+    @Bean
+    DirectExchange usePointExchange() {
+        return new DirectExchange(usePointExchangeName);
+    }
+
+    @Bean
+    Queue usePointQueue() {
+        return QueueBuilder.durable(usePointQueueName)
+            .withArgument("x-dead-letter-exchange", usePointExchangeName)
+            .withArgument("x-dead-letter-routing-key", usePointDlqRoutingName)
+            .build();
+    }
+
+    @Bean
+    Queue usePointDlqPointQueue() {
+        return new Queue(usePointDlqQueueName);
+    }
+
+    @Bean
+    Binding usePointBinding() {
+        return BindingBuilder.bind(usePointQueue()).to(usePointExchange()).with(usePointRoutingKey);
+    }
+
+    @Bean
+    Binding usePointDlqPointBinding() {
+        return BindingBuilder.bind(usePointDlqPointQueue()).to(usePointExchange()).with(usePointDlqRoutingName);
+    }
+
+
 //dlx
     @Bean
     RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
@@ -108,6 +151,11 @@ public class RabbitConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
+    }
+
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 
 }

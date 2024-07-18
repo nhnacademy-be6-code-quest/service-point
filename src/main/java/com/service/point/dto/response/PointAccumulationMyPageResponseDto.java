@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PointAccumulationMyPageResponseDto {
-    Integer pointAccumulationAmount;
+    Long pointAccumulationAmount;
     String pointAccumulationHistoryDate;
     String pointAccumulationType;
 }

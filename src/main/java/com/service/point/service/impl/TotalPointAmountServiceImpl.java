@@ -28,20 +28,20 @@ public class TotalPointAmountServiceImpl implements TotalPointAmountService {
         }
         long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER),-1L);
         long pointPolicyId = userRankClient.getClientGradeRate(clientId).getBody().getRatePolicyId();
-        Integer usePointAmount =pointUsageHistoryRepository.findTotalPointsByClientId(clientId);
-        Integer accumulationAmount = pointAccumulationHistoryRepository.findTotalPointsByClientId(clientId);
-        Integer pointRate = pointPolicyRepository.findById(pointPolicyId).get().getPointValue();
+        Long usePointAmount =pointUsageHistoryRepository.findTotalPointsByClientId(clientId);
+        Long accumulationAmount = pointAccumulationHistoryRepository.findTotalPointsByClientId(clientId);
+        Long pointRate = pointPolicyRepository.findById(pointPolicyId).get().getPointValue();
         if (usePointAmount ==null){
-            usePointAmount=0;
+            usePointAmount = 0L;
         }
         if(accumulationAmount==null){
-            accumulationAmount=0;
+            accumulationAmount=0L;
         }
         TotalPointAmountResponseDto dto = new TotalPointAmountResponseDto();
         dto.setTotalPoint(accumulationAmount-usePointAmount);
         dto.setPointAccumulationRate(pointRate);
         if (dto.getTotalPoint() < 0){
-            dto.setTotalPoint(0);
+            dto.setTotalPoint(0L);
         }
         return dto;
     }

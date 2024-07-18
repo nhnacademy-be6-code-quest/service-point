@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ClientPointAccumulationResponseDto {
-    Integer pointValue;
+    Long pointValue;
 }

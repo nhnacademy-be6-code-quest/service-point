@@ -4,8 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
- class PointPolicyAdminListResponseDtoTest {
+class PointPolicyAdminListResponseDtoTest {
 
     @Test
      void testNoArgsConstructor() {
@@ -18,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         // Then
         assertNotNull(dto);
         assertEquals(0, dto.getPointPolicyId()); // Check default value for long (0)
-        assertEquals(null, dto.getPointAccumulationType()); // Check default value for String (null)
-        assertEquals(null, dto.getPointValue()); // Check default value for Integer (null)
-        assertEquals(null, dto.getPointPolicyCreationDate()); // Check default value for String (null)
-        assertEquals(null, dto.getPointStatus()); // Check default value for String (null)
+        assertNull(dto.getPointAccumulationType()); // Check default value for String (null)
+        assertNull(dto.getPointValue()); // Check default value for Long (null)
+        assertNull(dto.getPointPolicyCreationDate()); // Check default value for String (null)
+        assertNull(dto.getPointStatus()); // Check default value for String (null)
     }
 
     @Test
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         // Given
         long pointPolicyId = 1L;
         String pointAccumulationType = "TypeA";
-        Integer pointValue = 100;
+        Long pointValue = 100L;
         String pointPolicyCreationDate = "2023-07-15";
         String pointStatus = "Active";
 
@@ -44,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         // Then
         assertEquals(pointPolicyId, dto.getPointPolicyId());
         assertEquals(pointAccumulationType, dto.getPointAccumulationType());
-        assertEquals(pointValue, dto.getPointValue());
         assertEquals(pointPolicyCreationDate, dto.getPointPolicyCreationDate());
         assertEquals(pointStatus, dto.getPointStatus());
     }

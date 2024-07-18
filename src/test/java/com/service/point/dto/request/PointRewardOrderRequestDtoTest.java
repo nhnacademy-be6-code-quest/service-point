@@ -3,8 +3,9 @@ package com.service.point.dto.request;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
- class PointRewardOrderRequestDtoTest {
+class PointRewardOrderRequestDtoTest {
 
     @Test
      void testNoArgsConstructor() {
@@ -15,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         dto = new PointRewardOrderRequestDto();
 
         // Then
-        assertEquals(null, dto.getAccumulatedPoint()); // Check default value for Integer (null)
+        assertNull(dto.getAccumulatedPoint()); // Check default value for Long (null)
     }
 
     @Test
      void testConstructorAndGetters() {
         // Given
-        Integer accumulatedPoint = 500;
+        Long accumulatedPoint = 500L;
 
         // When
         PointRewardOrderRequestDto dto = new PointRewardOrderRequestDto();

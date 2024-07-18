@@ -11,8 +11,8 @@ import lombok.Setter;
 public class PointPolicyAdminListResponseDto {
     long pointPolicyId;
     String pointAccumulationType;
-    Integer pointValue;
+    Long pointValue;
     String pointPolicyCreationDate;
-    String PointStatus;
+    String pointStatus;
 
 }

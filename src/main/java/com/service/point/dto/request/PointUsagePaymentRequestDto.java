@@ -8,5 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PointUsagePaymentRequestDto {
-    Integer pointUsagePayment;
+    Long pointUsageAmount;
+    Long clientId;
 }

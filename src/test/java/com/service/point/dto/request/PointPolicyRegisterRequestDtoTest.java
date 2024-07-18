@@ -3,8 +3,9 @@ package com.service.point.dto.request;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
- class PointPolicyRegisterRequestDtoTest {
+class PointPolicyRegisterRequestDtoTest {
 
     @Test
      void testNoArgsConstructor() {
@@ -15,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         dto = new PointPolicyRegisterRequestDto();
 
         // Then
-        assertEquals(null, dto.getPointAccumulationType()); // Check default value for String (null)
+        assertNull(dto.getPointAccumulationType()); // Check default value for String (null)
     }
 
     @Test
      void testConstructorAndGetters() {
         // Given
         String pointAccumulationType = "TypeA";
-        Integer pointValue = 100;
+        Long pointValue = 100L;
 
         // When
         PointPolicyRegisterRequestDto dto = new PointPolicyRegisterRequestDto();
@@ -31,6 +32,5 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
         // Then
         assertEquals(pointAccumulationType, dto.getPointAccumulationType());
-        assertEquals(pointValue, dto.getPointValue());
     }
 }

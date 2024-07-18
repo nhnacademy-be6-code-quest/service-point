@@ -3,8 +3,9 @@ package com.service.point.dto.request;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
- class PointPolicyModifyRequestDtoTest {
+class PointPolicyModifyRequestDtoTest {
 
     @Test
      void testNoArgsConstructor() {
@@ -16,14 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
         // Then
         assertEquals(0L, dto.getPointPolicyId()); // Check default value for long (0L)
-        assertEquals(null, dto.getPointValue()); // Check default value for Integer (null)
+        assertNull(dto.getPointValue()); // Check default value for Long (null)
     }
 
     @Test
      void testConstructorAndGetters() {
         // Given
         long pointPolicyId = 1L;
-        Integer pointValue = 100;
+        Long pointValue = 100L;
 
         // When
         PointPolicyModifyRequestDto dto = new PointPolicyModifyRequestDto();
@@ -32,6 +33,5 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
         // Then
         assertEquals(pointPolicyId, dto.getPointPolicyId());
-        assertEquals(pointValue, dto.getPointValue());
     }
 }

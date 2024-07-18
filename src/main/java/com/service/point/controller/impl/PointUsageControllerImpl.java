@@ -24,19 +24,6 @@ public class PointUsageControllerImpl implements PointUsageController {
 
     private final PointUsageHistoryService pointUsageHistoryService;
 
-    @PostMapping("/api/point/use/payment")
-    @Override
-    public ResponseEntity<String> usePaymentPoint(
-        @RequestBody PointUsagePaymentRequestDto pointUsagePaymentRequestDto, @RequestHeader
-    HttpHeaders headers) {
-        try {
-            pointUsageHistoryService.usedPaymentPoint(pointUsagePaymentRequestDto, headers);
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PostMapping("/api/point/use/refund")
     @Override
     public ResponseEntity<String> useRefundPoint(

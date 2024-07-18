@@ -19,13 +19,13 @@ public class PointUsageHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long pointUsageHistoryId;
     private LocalDate pointUsageHistoryDate;
-    private Integer pointUsageAmount;
+    private Long pointUsageAmount;
     @ManyToOne
     @JoinColumn(name = "pointUsageTypeId")
     private PointUsageType pointUsageType;
     private long clientId;
 
-    public PointUsageHistory(Integer pointUsageAmount, PointUsageType pointUsageType,
+    public PointUsageHistory(Long pointUsageAmount, PointUsageType pointUsageType,
         long clientId) {
         this.pointUsageHistoryDate=LocalDate.now();
         this.pointUsageAmount = pointUsageAmount;

@@ -15,19 +15,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         dto = new PointUsagePaymentRequestDto();
 
         // Then
-        assertEquals(null, dto.getPointUsagePayment()); // Check default value for Integer (null)
+        assertEquals(null, dto.getPointUsageAmount()); // Check default value for Long (null)
     }
 
     @Test
      void testConstructorAndGetters() {
         // Given
-        Integer pointUsagePayment = 500;
+        Long pointUsagePayment = 500L;
 
         // When
         PointUsagePaymentRequestDto dto = new PointUsagePaymentRequestDto();
-        dto.setPointUsagePayment(pointUsagePayment);
+        dto.setPointUsageAmount(pointUsagePayment);
 
         // Then
-        assertEquals(pointUsagePayment, dto.getPointUsagePayment());
+        assertEquals(pointUsagePayment, dto.getPointUsageAmount());
     }
 }

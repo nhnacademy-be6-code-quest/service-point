@@ -59,7 +59,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
 
         Long pointAccumulation = Math.round(pointPolicyOrderResponseDto.getAccumulatedPoint() * (pointPolicy.getPointValue() * 0.01));
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
-            pointPolicy, clientId, Math.toIntExact(pointAccumulation));
+            pointPolicy, clientId, pointAccumulation);
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
 

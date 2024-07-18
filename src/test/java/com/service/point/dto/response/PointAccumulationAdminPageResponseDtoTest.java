@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         dto = new PointAccumulationAdminPageResponseDto();
 
         // Then
-        assertEquals(null, dto.getPointAccumulationAmount()); // Check default value for Integer (null)
+        assertEquals(null, dto.getPointAccumulationAmount()); // Check default value for Long (null)
         assertEquals(null, dto.getPointAccumulationHistoryDate()); // Check default value for String (null)
         assertEquals(null, dto.getPointAccumulationType()); // Check default value for String (null)
         assertEquals(null, dto.getClientName()); // Check default value for String (null)
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
     @Test
      void testSetterAndGetter() {
         // Given
-        Integer pointAccumulationAmount = 100;
+        Long pointAccumulationAmount = 100;
         String pointAccumulationHistoryDate = "2023-07-15";
         String pointAccumulationType = "TypeA";
         String clientName = "John Doe";

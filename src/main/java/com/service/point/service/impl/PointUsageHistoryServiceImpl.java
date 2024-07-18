@@ -12,9 +12,11 @@ import com.service.point.exception.PointTypeNotFoundException;
 import com.service.point.repository.PointUsageHistoryRepository;
 import com.service.point.repository.PointUsageTypeRepository;
 import com.service.point.service.PointUsageHistoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.math.NumberUtils;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,20 +26,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PointUsageHistoryServiceImpl implements PointUsageHistoryService {
 
     private final PointUsageTypeRepository pointUsageTypeRepository;
     private final PointUsageHistoryRepository pointUsageHistoryRepository;
     private static final String ID_HEADER = "X-User-Id";
 
+
+
     @Override
-    public void usedPaymentPoint(PointUsagePaymentRequestDto pointUsagePaymentRequestDto, HttpHeaders headers){
-        if (headers.getFirst(ID_HEADER) == null) {
-            throw new ClientNotFoundException("유저가 존재하지 않습니다.");
-        }
-        long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
+    @RabbitListener(queues = "${rabbit.use.point.queue.name}")
+    public void usedPaymentPoint(PointUsagePaymentRequestDto pointUsagePaymentRequestDto){
+        log.info("{}", pointUsagePaymentRequestDto.getPointUsageAmount());
         PointUsageType pointUsageType = pointUsageTypeRepository.findByPointUsageKind(PointUsageKind.PAYMENT);
-        PointUsageHistory pointUsageHistory = new PointUsageHistory(pointUsagePaymentRequestDto.getPointUsagePayment(), pointUsageType, clientId);
+        PointUsageHistory pointUsageHistory = new PointUsageHistory(pointUsagePaymentRequestDto.getPointUsageAmount(), pointUsageType, pointUsagePaymentRequestDto.getClientId());
         pointUsageHistoryRepository.save(pointUsageHistory);
     }
 

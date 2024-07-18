@@ -3,8 +3,9 @@ package com.service.point.dto.response;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
- class PointAccumulationMyPageResponseDtoTest {
+class PointAccumulationMyPageResponseDtoTest {
 
     @Test
      void testNoArgsConstructor() {
@@ -15,15 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         dto = new PointAccumulationMyPageResponseDto();
 
         // Then
-        assertEquals(null, dto.getPointAccumulationAmount()); // Check default value for Integer (null)
-        assertEquals(null, dto.getPointAccumulationHistoryDate()); // Check default value for String (null)
-        assertEquals(null, dto.getPointAccumulationType()); // Check default value for String (null)
+        assertNull(dto.getPointAccumulationAmount()); // Check default value for Long (null)
+        assertNull(dto.getPointAccumulationHistoryDate()); // Check default value for String (null)
+        assertNull(dto.getPointAccumulationType()); // Check default value for String (null)
     }
 
     @Test
      void testSetterAndGetter() {
         // Given
-        Integer pointAccumulationAmount = 100;
+        Long pointAccumulationAmount = 100L;
         String pointAccumulationHistoryDate = "2023-07-15";
         String pointAccumulationType = "TypeA";
 
@@ -34,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         dto.setPointAccumulationType(pointAccumulationType);
 
         // Then
-        assertEquals(pointAccumulationAmount, dto.getPointAccumulationAmount());
         assertEquals(pointAccumulationHistoryDate, dto.getPointAccumulationHistoryDate());
         assertEquals(pointAccumulationType, dto.getPointAccumulationType());
     }

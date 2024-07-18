@@ -22,23 +22,6 @@ public interface PointUsageController {
 
     @Operation(
         summary = "포인트 사용내역",
-        description = "Order - 사용자 결제시 포인트 사용",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Success"
-            )
-        }
-    )
-    @PostMapping("/api/point/use/payment")
-    ResponseEntity<String> usePaymentPoint(
-        @Parameter(description = "사용자 결제시 포인트 사용양")
-        @RequestBody PointUsagePaymentRequestDto pointUsagePaymentRequestDto,
-        @Parameter(description = "사용자 아이디")
-        @RequestHeader
-    HttpHeaders headers);
-    @Operation(
-        summary = "포인트 사용내역",
         description = "Refund - 사용자 환불시 적립포인트 사용",
         responses = {
             @ApiResponse(

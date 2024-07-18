@@ -14,9 +14,8 @@ public interface PointUsageHistoryService {
      *
      * @author jjeonmin
      * @param pointUsagePaymentRequestDto 결제 시 사용한 포인트정보 Dto
-     * @param headers 회원의 아이디정보
      */
-    void usedPaymentPoint(PointUsagePaymentRequestDto pointUsagePaymentRequestDto, HttpHeaders headers);
+    void usedPaymentPoint(PointUsagePaymentRequestDto pointUsagePaymentRequestDto);
 
     /**
      * 결제시 적립된 포인트량을 사용내역에 추가하는 함수

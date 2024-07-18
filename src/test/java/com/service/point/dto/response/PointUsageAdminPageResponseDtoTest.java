@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         // Then
         assertNotNull(dto);
         assertEquals(null, dto.getPointUsageHistoryDate()); // Check default value for String (null)
-        assertEquals(null, dto.getPointUsageAmount()); // Check default value for Integer (null)
+        assertEquals(null, dto.getPointUsageAmount()); // Check default value for Long (null)
         assertEquals(0L, dto.getClientId()); // Check default value for long (0L)
         assertEquals(null, dto.getPointUsageType()); // Check default value for String (null)
     }
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
      void testSetterAndGetter() {
         // Given
         String pointUsageHistoryDate = "2023-01-15";
-        Integer pointUsageAmount = 50;
+        Long pointUsageAmount = 50;
         long clientId = 12345L;
         String pointUsageType = "Payment";
 
