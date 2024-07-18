@@ -2,6 +2,7 @@ package com.service.point.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.point.client.UserNameClient;
+import com.service.point.client.UserRankClient;
 import com.service.point.config.MemberShipMessageDto;
 import com.service.point.config.ReviewMessageDto;
 import com.service.point.domain.PointStatus;
@@ -42,6 +43,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
     private static final String ID_HEADER = "X-User-Id";
     private final PointPolicyRepository pointPolicyRepository;
     private final ObjectMapper objectMapper;
+    private final UserRankClient userRankClient;
 
     @Override
     public void orderPoint(HttpHeaders headers,
@@ -50,14 +52,14 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             throw new ClientNotFoundException("유저가 존재하지 않습니다.");
         }
 
-        PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus(
-            "결제", PointStatus.ACTIVATE);
-        if (pointPolicy == null) {
-            throw new PointPolicyNotFoundException("포인트 정책이 존재하지않습니다.");
-        }
         long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
+        Long pointPolicyId = userRankClient.getClientGradeRate(clientId).getBody().getRatePolicyId();
+
+        PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId).orElseThrow(()-> new PointPolicyNotFoundException("포인트정책이 존재하지않습니다."));
+
+        Long pointAccumulation = Math.round(pointPolicyOrderResponseDto.getAccumulatedPoint() * (pointPolicy.getPointValue() * 0.01));
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
-            pointPolicy, clientId, pointPolicyOrderResponseDto.getAccumulatedPoint());
+            pointPolicy, clientId, Math.toIntExact(pointAccumulation));
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
     }
 
