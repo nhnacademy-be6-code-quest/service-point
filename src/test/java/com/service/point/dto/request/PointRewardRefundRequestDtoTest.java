@@ -30,6 +30,7 @@ class PointRewardRefundRequestDtoTest {
         dto.setPayment(accumulatedPoint);
 
         // Then
+        assertEquals(accumulatedPoint, dto.getPayment());
 
     }
 }

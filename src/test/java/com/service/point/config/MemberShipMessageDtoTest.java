@@ -39,7 +39,6 @@ class MemberShipMessageDtoTest {
         String json = "{\"clientId\":123}";
 
         MemberShipMessageDto dto = objectMapper.readValue(json, MemberShipMessageDto.class);
-        assertThat(dto).isNotNull();
-        assertThat(dto.getClientId()).isEqualTo(123L);
+        assertThat(dto.getClientId()).isEqualTo(123L).isNotNull();
     }
 }
