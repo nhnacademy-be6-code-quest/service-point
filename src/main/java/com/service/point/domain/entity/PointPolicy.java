@@ -19,14 +19,14 @@ public class PointPolicy {
     private long pointPolicyId;
     private String pointAccumulationType;
     @Setter
-    private Integer pointValue;
+    private Long pointValue;
     private LocalDate pointPolicyCreationDate;
     @Setter
     private LocalDate pointPolicyExpirationDate;
     @Setter
     private PointStatus pointStatus;
 
-    public PointPolicy(String pointAccumulationType, Integer pointValue) {
+    public PointPolicy(String pointAccumulationType, Long pointValue) {
         this.pointPolicyCreationDate=LocalDate.now();
         this.pointStatus=PointStatus.DISABLED;
         this.pointValue = pointValue;

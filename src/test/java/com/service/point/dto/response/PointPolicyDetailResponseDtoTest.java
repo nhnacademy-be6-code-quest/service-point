@@ -18,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         // Then
         assertNotNull(dto);
         assertEquals(null, dto.getPointAccumulationType()); // Check default value for String (null)
-        assertEquals(null, dto.getPointValue()); // Check default value for Integer (null)
+        assertEquals(null, dto.getPointValue()); // Check default value for Long (null)
     }
 
     @Test
      void testSetterAndGetter() {
         // Given
         String pointAccumulationType = "TypeA";
-        Integer pointValue = 100;
+        Long pointValue = 100L;
 
         // When
         PointPolicyDetailResponseDto dto = new PointPolicyDetailResponseDto();

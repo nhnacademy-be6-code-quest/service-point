@@ -2,7 +2,6 @@ package com.service.point.controller.impl;
 
 import com.service.point.controller.PointAccumulationHistoryController;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
-import com.service.point.dto.request.PointRewardRefundRequestDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
@@ -41,18 +40,6 @@ public class PointAccumulationHistoryControllerImpl implements PointAccumulation
         }
     }
 
-    @PostMapping("/api/point/refund")
-    @Override
-    public ResponseEntity<String> rewardRefundPoint(@RequestHeader HttpHeaders headers, @RequestBody
-    PointRewardRefundRequestDto pointRewardRefundRequestDto) {
-        try {
-            pointAccumulationHistoryService.refundPoint(headers, pointRewardRefundRequestDto);
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
-        }
-
-    }
 
     @GetMapping("/api/point/myPage/reward")
     public ResponseEntity<Page<PointAccumulationMyPageResponseDto>> findClientPoint(

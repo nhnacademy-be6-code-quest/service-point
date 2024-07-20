@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface PointUsageHistoryRepository extends JpaRepository<PointUsageHistory, Long> {
     @Query("SELECT SUM(p.pointUsageAmount) FROM PointUsageHistory p WHERE p.clientId = :clientId")
-    Integer findTotalPointsByClientId(@Param("clientId") long clientId);
+    Long findTotalPointsByClientId(@Param("clientId") long clientId);
 
     Page<PointUsageHistory> findByClientId(long clientId, Pageable pageable);
 }

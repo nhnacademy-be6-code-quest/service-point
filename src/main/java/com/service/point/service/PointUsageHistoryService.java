@@ -1,7 +1,5 @@
 package com.service.point.service;
 
-import com.service.point.dto.request.PointUsagePaymentRequestDto;
-import com.service.point.dto.request.PointUsageRefundRequestDto;
 import com.service.point.dto.response.PointUsageAdminPageResponseDto;
 import com.service.point.dto.response.PointUsageMyPageResponseDto;
 import org.springframework.data.domain.Page;
@@ -13,19 +11,17 @@ public interface PointUsageHistoryService {
      * 결제시 사용한 포인트량을 사용 내역에 추가하는 함수
      *
      * @author jjeonmin
-     * @param pointUsagePaymentRequestDto 결제 시 사용한 포인트정보 Dto
-     * @param headers 회원의 아이디정보
+     * @param message 결제 시 사용한 포인트정보 Dto
      */
-    void usedPaymentPoint(PointUsagePaymentRequestDto pointUsagePaymentRequestDto, HttpHeaders headers);
+    void usedPaymentPoint(String message);
 
     /**
      * 결제시 적립된 포인트량을 사용내역에 추가하는 함수
      *
      * @author jjeonmin
-     * @param pointUsageRefundRequestDto 결제 시 적립된 포인트정보 Dto
-     * @param headers 회원의 아이디정보
+     * @param message 결제 시 적립된 포인트정보 Dto
      */
-    void usedRefundPoint (PointUsageRefundRequestDto pointUsageRefundRequestDto, HttpHeaders headers);
+    void usedRefundPoint (String message);
 
     /**
      * 마이페이지에서 페이지와, 한 페이지의 사이즈를 인자로 받아 회원의 포인트 사용내역을 반환 (권한 필요)

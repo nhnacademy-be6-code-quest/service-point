@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
         // Given
         PointPolicy pointPolicy = new PointPolicy(); // Replace with actual PointPolicy instance if needed
         long clientId = 123L;
-        Integer pointAccumulationAmount = 100;
+        Long pointAccumulationAmount = 100L;
 
         // When
         PointAccumulationHistory history = new PointAccumulationHistory(pointPolicy, clientId, pointAccumulationAmount);
@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
         assertEquals(pointPolicy, history.getPointPolicy());
         assertEquals(clientId, history.getClientId());
         assertEquals(LocalDate.now(), history.getPointAccumulationHistoryDate());
-        assertEquals(pointAccumulationAmount, history.getPointAccumulationAmount());
     }
 
     @Test

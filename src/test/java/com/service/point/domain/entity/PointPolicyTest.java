@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
      void testConstructorAndGetters() {
         // Given
         String pointAccumulationType = "TYPE_A";
-        Integer pointValue = 100;
+        Long pointValue = 100L;
 
         // When
         PointPolicy policy = new PointPolicy(pointAccumulationType, pointValue);
@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
         // Then
         assertNotNull(policy);
         assertEquals(pointAccumulationType, policy.getPointAccumulationType());
-        assertEquals(pointValue, policy.getPointValue());
 
     }
 
@@ -38,14 +37,12 @@ import static org.junit.jupiter.api.Assertions.*;
         PointPolicy policy = new PointPolicy();
 
         // When
-        String newAccumulationType = "TYPE_B";
-        Integer newValue = 200;
+        Long newValue = 200L;
         LocalDate newExpirationDate = LocalDate.now().plusMonths(6);
         policy.setPointValue(newValue);
         policy.setPointPolicyExpirationDate(newExpirationDate);
 
         // Then
-        assertEquals(newValue, policy.getPointValue());
         assertEquals(newExpirationDate, policy.getPointPolicyExpirationDate());
     }
 

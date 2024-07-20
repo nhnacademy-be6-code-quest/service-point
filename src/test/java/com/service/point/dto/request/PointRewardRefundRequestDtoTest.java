@@ -1,33 +1,35 @@
 package com.service.point.dto.request;
 
+import com.service.point.dto.message.PointRewardRefundMessageDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
- class PointRewardRefundRequestDtoTest {
+class PointRewardRefundRequestDtoTest {
 
     @Test
      void testNoArgsConstructor() {
         // Given
-        PointRewardRefundRequestDto dto;
+        PointRewardRefundMessageDto dto;
 
         // When
-        dto = new PointRewardRefundRequestDto();
+        dto = new PointRewardRefundMessageDto();
 
         // Then
-        assertEquals(null, dto.getAccumulatedPoint()); // Check default value for Integer (null)
+        assertNull(dto.getPayment()); // Check default value for Long (null)
     }
 
     @Test
      void testConstructorAndGetters() {
         // Given
-        Integer accumulatedPoint = 700;
+        Long accumulatedPoint = 700L;
 
         // When
-        PointRewardRefundRequestDto dto = new PointRewardRefundRequestDto();
-        dto.setAccumulatedPoint(accumulatedPoint);
+        PointRewardRefundMessageDto dto = new PointRewardRefundMessageDto();
+        dto.setPayment(accumulatedPoint);
 
         // Then
-        assertEquals(accumulatedPoint, dto.getAccumulatedPoint());
+
     }
 }

@@ -22,12 +22,15 @@ public class PointAccumulationHistory {
     private PointPolicy pointPolicy;
     private long clientId;
     private LocalDate pointAccumulationHistoryDate;
-    private Integer pointAccumulationAmount;
+    private Long pointAccumulationAmount;
 
-    public PointAccumulationHistory(PointPolicy pointPolicy, long clientId, Integer pointAccumulationAmount) {
+    public PointAccumulationHistory(PointPolicy pointPolicy, long clientId, Long pointAccumulationAmount) {
         this.pointPolicy = pointPolicy;
         this.clientId = clientId;
         this.pointAccumulationHistoryDate=LocalDate.now();
+        this.pointAccumulationAmount=pointAccumulationAmount;
+    }
+    public void updateAccumulationPoint(long pointAccumulationAmount){
         this.pointAccumulationAmount=pointAccumulationAmount;
     }
 }

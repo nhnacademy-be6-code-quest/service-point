@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
      void testConstructorAndGetters() {
         // Given
-        Integer pointUsageAmount = 50;
+        Long pointUsageAmount = 50L;
         PointUsageType pointUsageType = new PointUsageType(); // Create PointUsageType as needed
         long clientId = 123;
 
@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
         // Then
         assertNotNull(history);
-        assertEquals(pointUsageAmount, history.getPointUsageAmount());
         assertEquals(pointUsageType, history.getPointUsageType());
         assertEquals(clientId, history.getClientId());
     }

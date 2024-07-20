@@ -17,15 +17,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
         // Then
         assertNotNull(dto);
-        assertEquals(null, dto.getTotalPoint()); // Check default value for Integer (null)
-        assertEquals(null, dto.getPointAccumulationRate()); // Check default value for Integer (null)
+        assertEquals(null, dto.getTotalPoint()); // Check default value for Long (null)
+        assertEquals(null, dto.getPointAccumulationRate()); // Check default value for Long (null)
     }
 
     @Test
      void testSetterAndGetter() {
         // Given
-        Integer totalPoint = 1000;
-        Integer pointAccumulationRate = 5;
+        Long totalPoint = 1000L;
+        Long pointAccumulationRate = 5L;
 
         // When
         TotalPointAmountResponseDto dto = new TotalPointAmountResponseDto();

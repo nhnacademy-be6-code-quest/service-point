@@ -1,7 +1,7 @@
 package com.service.point.controller;
 
 import com.service.point.dto.request.PointRewardOrderRequestDto;
-import com.service.point.dto.request.PointRewardRefundRequestDto;
+import com.service.point.dto.message.PointRewardRefundMessageDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
@@ -39,23 +39,6 @@ public interface PointAccumulationHistoryController {
         @Parameter(description = "포인트 적립양")
         @RequestBody PointRewardOrderRequestDto pointRewardOrderRequestDto);
 
-    @Operation(
-        summary = "환불시 포인트 적립",
-        description = "Refund - 사용자 포인트 적립",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "success"
-            )
-        }
-    )
-    @PostMapping("/api/point/refund")
-    ResponseEntity<String> rewardRefundPoint(
-        @Parameter(description = "포인트를 적립하는 회원의 아이디")
-        @RequestHeader HttpHeaders headers,
-        @Parameter(description = "포인트 적립양")
-        @RequestBody
-    PointRewardRefundRequestDto pointRewardRefundRequestDto);
 
     @Operation(
         summary = "마이페이지 적립 포인트 조회",

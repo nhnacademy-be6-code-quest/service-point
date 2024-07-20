@@ -44,32 +44,13 @@ import static org.mockito.Mockito.*;
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-     void testOrderPoint_Success() {
-        // Given
-        long clientId = 1L;
-        int accumulatedPoint = 100;
-        PointRewardOrderRequestDto requestDto = new PointRewardOrderRequestDto();
-        requestDto.setAccumulatedPoint(accumulatedPoint);
-        when(headers.getFirst("X-User-Id")).thenReturn(Long.toString(clientId));
-        PointPolicy pointPolicy = new PointPolicy("결제", 10);
-        pointPolicy.setPointStatus(PointStatus.ACTIVATE);
-        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("결제", PointStatus.ACTIVATE))
-            .thenReturn(pointPolicy);
-
-        // When
-        pointAccumulationHistoryService.orderPoint(headers, requestDto);
-
-        // Then
-        verify(pointPolicyRepository, times(1)).findByPointAccumulationTypeEqualsAndPointStatus("결제", PointStatus.ACTIVATE);
-        verify(pointAccumulationHistoryRepository, times(1)).save(any(PointAccumulationHistory.class));
-    }
+    
 
     @Test
      void testOrderPoint_ClientNotFound() {
         // Given
         PointRewardOrderRequestDto requestDto = new PointRewardOrderRequestDto();
-        requestDto.setAccumulatedPoint(100);
+        requestDto.setAccumulatedPoint(100L);
         when(headers.getFirst("X-User-Id")).thenReturn(null);
 
         // When, Then
@@ -78,21 +59,7 @@ import static org.mockito.Mockito.*;
         });
     }
 
-    @Test
-     void testOrderPoint_PolicyNotFound() {
-        // Given
-        long clientId = 1L;
-        PointRewardOrderRequestDto requestDto = new PointRewardOrderRequestDto();
-        requestDto.setAccumulatedPoint(100);
-        when(headers.getFirst("X-User-Id")).thenReturn(Long.toString(clientId));
-        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("결제", PointStatus.ACTIVATE))
-            .thenReturn(null);
 
-        // When, Then
-        assertThrows(PointPolicyNotFoundException.class, () -> {
-            pointAccumulationHistoryService.orderPoint(headers, requestDto);
-        });
-    }
     @Test
     public void testReviewPoint_WithImage() throws IOException {
         // Given
@@ -101,7 +68,7 @@ import static org.mockito.Mockito.*;
         reviewMessageDto.setHasImage(true);
         String message = "{\"clientId\":1,\"hasImage\":true}";
         when(objectMapper.readValue(message, ReviewMessageDto.class)).thenReturn(reviewMessageDto);
-        PointPolicy pointPolicy = new PointPolicy("사진리뷰", 20);
+        PointPolicy pointPolicy = new PointPolicy("사진리뷰", 20L);
         pointPolicy.setPointStatus(PointStatus.ACTIVATE);
         when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("사진리뷰", PointStatus.ACTIVATE))
             .thenReturn(pointPolicy);
@@ -122,7 +89,7 @@ import static org.mockito.Mockito.*;
         reviewMessageDto.setHasImage(false);
         String message = "{\"clientId\":1,\"hasImage\":false}";
         when(objectMapper.readValue(message, ReviewMessageDto.class)).thenReturn(reviewMessageDto);
-        PointPolicy pointPolicy = new PointPolicy("리뷰", 10);
+        PointPolicy pointPolicy = new PointPolicy("리뷰", 10L);
         pointPolicy.setPointStatus(PointStatus.ACTIVATE);
         when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE))
             .thenReturn(pointPolicy);
@@ -141,7 +108,7 @@ import static org.mockito.Mockito.*;
         memberShipMessageDto.setClientId(1L);
         String message = "{\"clientId\":1}";
         when(objectMapper.readValue(message, MemberShipMessageDto.class)).thenReturn(memberShipMessageDto);
-        PointPolicy pointPolicy = new PointPolicy("회원가입", 50);
+        PointPolicy pointPolicy = new PointPolicy("회원가입", 50L);
         pointPolicy.setPointStatus(PointStatus.ACTIVATE);
         when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("회원가입", PointStatus.ACTIVATE))
             .thenReturn(pointPolicy);

@@ -61,7 +61,7 @@ public class PointPolicyControllerImpl implements PointPolicyController {
     }
 
 
-    @GetMapping("/api/point/policy/grade")
+    @GetMapping("/api/point/client/grade")
     public ResponseEntity<ClientPointAccumulationResponseDto> clientPointAccumulation(@RequestParam long pointPolicyId){
         return ResponseEntity.ok(pointPolicyService.findByAccumulation(pointPolicyId));
     }

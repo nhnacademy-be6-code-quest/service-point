@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface PointAccumulationHistoryRepository extends JpaRepository<PointAccumulationHistory, Long> {
     @Query("SELECT SUM(p.pointAccumulationAmount) FROM PointAccumulationHistory p WHERE p.clientId = :clientId")
-    Integer findTotalPointsByClientId(@Param("clientId") long clientId);
+    Long findTotalPointsByClientId(@Param("clientId") long clientId);
 
     Page<PointAccumulationHistory> findByClientId(long clientId, Pageable pageable);
 
