@@ -1,17 +1,21 @@
 package com.service.point.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.point.domain.PointUsageKind;
 import com.service.point.domain.entity.PointUsageHistory;
 import com.service.point.domain.entity.PointUsageType;
+import com.service.point.dto.message.PointUsageRefundMessageDto;
 import com.service.point.dto.request.PointUsagePaymentRequestDto;
-import com.service.point.dto.request.PointUsageRefundRequestDto;
+import com.service.point.dto.message.PointUsagePaymentMessageDto;
 import com.service.point.dto.response.PointUsageAdminPageResponseDto;
 import com.service.point.dto.response.PointUsageMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
 import com.service.point.exception.PointTypeNotFoundException;
+import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointUsageHistoryRepository;
 import com.service.point.repository.PointUsageTypeRepository;
 import com.service.point.service.PointUsageHistoryService;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -31,27 +35,40 @@ public class PointUsageHistoryServiceImpl implements PointUsageHistoryService {
 
     private final PointUsageTypeRepository pointUsageTypeRepository;
     private final PointUsageHistoryRepository pointUsageHistoryRepository;
+    private final ObjectMapper objectMapper;
     private static final String ID_HEADER = "X-User-Id";
 
 
 
     @Override
     @RabbitListener(queues = "${rabbit.use.point.queue.name}")
-    public void usedPaymentPoint(PointUsagePaymentRequestDto pointUsagePaymentRequestDto){
-        log.info("{}", pointUsagePaymentRequestDto.getPointUsageAmount());
+    public void usedPaymentPoint(String message){
+        PointUsagePaymentMessageDto pointUsagePaymentRequestDto;
+        try{
+            pointUsagePaymentRequestDto = objectMapper.readValue(message, PointUsagePaymentMessageDto.class);
+        } catch (IOException e){
+            throw new RabbitMessageConvertException("사용 포인트 메세지 변환에 실패했습니다.");
+        }
         PointUsageType pointUsageType = pointUsageTypeRepository.findByPointUsageKind(PointUsageKind.PAYMENT);
-        PointUsageHistory pointUsageHistory = new PointUsageHistory(pointUsagePaymentRequestDto.getPointUsageAmount(), pointUsageType, pointUsagePaymentRequestDto.getClientId());
-        pointUsageHistoryRepository.save(pointUsageHistory);
+        if (pointUsagePaymentRequestDto.getPointUsagePayment()!=0) {
+            PointUsageHistory pointUsageHistory = new PointUsageHistory(
+                pointUsagePaymentRequestDto.getPointUsagePayment(), pointUsageType,
+                pointUsagePaymentRequestDto.getClientId());
+            pointUsageHistoryRepository.save(pointUsageHistory);
+        }
     }
 
-    @Override
-    public void usedRefundPoint (PointUsageRefundRequestDto pointUsageRefundRequestDto, HttpHeaders headers){
-        if (headers.getFirst(ID_HEADER) == null) {
-            throw new ClientNotFoundException("유저가 존재하지 않습니다.");
+    @RabbitListener(queues = "${rabbit.usedRefund.point.queue.name}")
+    public void usedRefundPoint (String message){
+        PointUsageRefundMessageDto pointUsagePaymentMessageDto;
+        try{ pointUsagePaymentMessageDto = objectMapper.readValue(message, PointUsageRefundMessageDto.class);
+
+        }catch (IOException e){
+            throw new RabbitMessageConvertException("적립 포인트 메세지 변환에 실패하였습니다.");
         }
-        long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
+
         PointUsageType pointUsageType = pointUsageTypeRepository.findByPointUsageKind(PointUsageKind.REFUND);
-        PointUsageHistory pointUsageHistory = new PointUsageHistory(pointUsageRefundRequestDto.getPointUsagePayment(), pointUsageType, clientId);
+        PointUsageHistory pointUsageHistory = new PointUsageHistory(pointUsagePaymentMessageDto.getPointUsagePayment(), pointUsageType, pointUsagePaymentMessageDto.getClientId());
         pointUsageHistoryRepository.save(pointUsageHistory);
     }
 

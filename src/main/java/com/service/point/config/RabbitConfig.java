@@ -1,18 +1,16 @@
 package com.service.point.config;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +18,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class RabbitConfig {
+
+    private final String rabbitHost;
+    private final int rabbitPort;
+    private final String rabbitUsername;
+    private final String rabbitPassword;
 
     @Value("${rabbit.point.exchange.name}")
     private String signupPointExchangeName;
@@ -32,7 +35,6 @@ public class RabbitConfig {
     @Value("${rabbit.point.dlq.routing.key}")
     private String signupDlqPointRoutingKey;
 
-
     @Value("${rabbit.review.exchange.name}")
     private String reviewPointExchangeName;
     @Value("${rabbit.review.queue.name}")
@@ -44,17 +46,43 @@ public class RabbitConfig {
     @Value("${rabbit.review.dlq.routing.key}")
     private String reviewDlqPointRoutingKey;
 
-
     @Value("${rabbit.use.point.exchange.name}")
     private String usePointExchangeName;
     @Value("${rabbit.use.point.queue.name}")
     private String usePointQueueName;
-    @Value("${rabbit.use.point.routing.name}")
+    @Value("${rabbit.use.point.routing.key}")
     private String usePointRoutingKey;
     @Value("${rabbit.use.point.dlq.queue.name}")
     private String usePointDlqQueueName;
-    @Value("${rabbit.use.point.dlq.routing.name}")
+    @Value("${rabbit.use.point.dlq.routing.key}")
     private String usePointDlqRoutingName;
+
+    @Value("${rabbit.refund.point.exchange.name}")
+    private String refundPointExchangeName;
+    @Value("${rabbit.refund.point.queue.name}")
+    private String refundPointQueueName;
+    @Value("${rabbit.refund.point.routing.key}")
+    private String refundPointRoutingKey;
+    @Value("${rabbit.refund.point.dlq.queue.name}")
+    private String refundPointDlqQueueName;
+    @Value("${rabbit.refund.point.dlq.routing.key}")
+    private String refundPointDlqRoutingName;
+
+    @Value("${rabbit.usedRefund.point.exchange.name}")
+    private String refundUsedPointExchangeName;
+    @Value("${rabbit.usedRefund.point.queue.name}")
+    private String refundUsedPointQueueName;
+    @Value("${rabbit.usedRefund.point.routing.key}")
+    private String refundUsedPointRoutingKey;
+    @Value("${rabbit.usedRefund.point.dlq.queue.name}")
+    private String refundUsedPointDlqQueueName;
+    @Value("${rabbit.usedRefund.point.dlq.routing.key}")
+    private String refundUsedPointDlqRoutingName;
+
+
+    private static final String DLQ_EXCHANGE = "x-dead-letter-exchange";
+    private static final String DLQ_ROUTING = "x-dead-letter-routing-key";
+
 
 
     @Bean
@@ -64,11 +92,11 @@ public class RabbitConfig {
 
     @Bean
     Queue reviewPointQueue() {
-            return QueueBuilder.durable(reviewPointQueueName)
-                .withArgument("x-dead-letter-exchange", reviewPointExchangeName)
-                .withArgument("x-dead-letter-routing-key", reviewDlqPointRoutingKey)
-                .build();
-        }
+        return QueueBuilder.durable(reviewPointQueueName)
+            .withArgument(DLQ_EXCHANGE, reviewPointExchangeName)
+            .withArgument(DLQ_ROUTING, reviewDlqPointRoutingKey)
+            .build();
+    }
     @Bean
     Queue reviewDlqPointQueue() {
         return new Queue(reviewDlqPointQueueName);
@@ -90,8 +118,8 @@ public class RabbitConfig {
     @Bean
     Queue signupPointQueue() {
         return QueueBuilder.durable(signupPointQueueName)
-            .withArgument("x-dead-letter-exchange", signupPointExchangeName)
-            .withArgument("x-dead-letter-routing-key", signupDlqPointRoutingKey)
+            .withArgument(DLQ_EXCHANGE, signupPointExchangeName)
+            .withArgument(DLQ_ROUTING, signupDlqPointRoutingKey)
             .build();
     }
 
@@ -117,8 +145,8 @@ public class RabbitConfig {
     @Bean
     Queue usePointQueue() {
         return QueueBuilder.durable(usePointQueueName)
-            .withArgument("x-dead-letter-exchange", usePointExchangeName)
-            .withArgument("x-dead-letter-routing-key", usePointDlqRoutingName)
+            .withArgument(DLQ_EXCHANGE, usePointExchangeName)
+            .withArgument(DLQ_ROUTING, usePointDlqRoutingName)
             .build();
     }
 
@@ -138,7 +166,7 @@ public class RabbitConfig {
     }
 
 
-//dlx
+    //dlx
     @Bean
     RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
@@ -147,15 +175,67 @@ public class RabbitConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper;
+    Queue refundPointQueue(){
+        return QueueBuilder.durable(refundPointQueueName)
+            .withArgument(DLQ_EXCHANGE, refundPointExchangeName)
+            .withArgument(DLQ_ROUTING, refundPointDlqRoutingName)
+            .build();
     }
 
     @Bean
-    public MessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
+    Queue refundDlqPointQueue(){
+        return QueueBuilder.durable(refundPointDlqQueueName).build();
     }
+
+    @Bean
+    Binding refundPointBinding(){
+        return BindingBuilder.bind(refundPointQueue()).to(refundPointExchange()).with(refundPointRoutingKey);
+    }
+    @Bean
+    Binding refundDlqPointBinding(){
+        return BindingBuilder.bind(refundDlqPointQueue()).to(refundPointExchange()).with(refundPointDlqRoutingName);
+    }
+
+    @Bean
+    DirectExchange refundPointExchange(){
+        return new DirectExchange(refundPointExchangeName);
+    }
+    @Bean
+    DirectExchange refundUsedPointExchange() {
+        return new DirectExchange(refundUsedPointExchangeName);
+    }
+
+    @Bean
+    Queue refundUsedPointQueue() {
+        return QueueBuilder.durable(refundUsedPointQueueName)
+            .withArgument(DLQ_EXCHANGE, refundUsedPointExchangeName)
+            .withArgument(DLQ_ROUTING, refundUsedPointDlqRoutingName)
+            .build();
+    }
+    @Bean
+    Queue refundUsedDlqPointQueue() {
+        return new Queue(refundUsedPointDlqQueueName);
+    }
+    @Bean
+    Binding refundUsedPointBinding() {
+        return BindingBuilder.bind(refundUsedPointQueue()).to(refundUsedPointExchange()).with(refundUsedPointRoutingKey);
+    }
+    @Bean
+    Binding refundUsedDlqPointBinding() {
+        return BindingBuilder.bind(refundUsedDlqPointQueue()).to(refundUsedPointExchange()).with(refundUsedPointDlqRoutingName);
+    }
+
+
+
+
+
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(rabbitHost, rabbitPort);
+        connectionFactory.setUsername(rabbitUsername);
+        connectionFactory.setPassword(rabbitPassword);
+        return connectionFactory;
+    }
+
 
 }

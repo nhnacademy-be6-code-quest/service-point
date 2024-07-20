@@ -9,7 +9,7 @@ import com.service.point.domain.PointStatus;
 import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
-import com.service.point.dto.request.PointRewardRefundRequestDto;
+import com.service.point.dto.message.PointRewardRefundMessageDto;
 import com.service.point.dto.response.ClientNameResponseDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
@@ -126,19 +126,33 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
     }
 
     @Override
-    public void refundPoint(HttpHeaders headers,
-        PointRewardRefundRequestDto pointRewardRefundRequestDto) {
-        if (headers.getFirst(ID_HEADER) == null) {
-            throw new ClientNotFoundException("유저가 존재하지 않습니다.");
+    @RabbitListener(queues = "${rabbit.refund.point.queue.name}")
+    @Transactional
+    public void refundPoint(String message){
+        PointRewardRefundMessageDto pointRewardRefundMessageDto;
+        try{
+            pointRewardRefundMessageDto = objectMapper.readValue(message, PointRewardRefundMessageDto.class);
+        } catch (IOException e){
+            throw new RabbitMessageConvertException("환불 포인트 메세지를 변환할수없습니다.");
         }
         PointPolicy pointPolicy = pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("환불", PointStatus.ACTIVATE);
         if (pointPolicy == null) {
             throw new PointPolicyNotFoundException("포인트 정책이 존재하지 않습니다.");
         }
-        long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
+
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
-            pointPolicy, clientId, pointRewardRefundRequestDto.getAccumulatedPoint());
+            pointPolicy, pointRewardRefundMessageDto.getClientId(), pointRewardRefundMessageDto.getPayment());
         pointAccumulationHistoryRepository.save(pointAccumulationHistory);
+        if (pointRewardRefundMessageDto.getDiscountAmountByPoint()!=0) {
+            PointAccumulationHistory pointAccumulationHistory1 = new PointAccumulationHistory(
+                pointPolicy, pointRewardRefundMessageDto.getClientId(),
+                pointRewardRefundMessageDto.getDiscountAmountByPoint());
+            pointAccumulationHistoryRepository.save(pointAccumulationHistory1);
+        }
+    }
+    @RabbitListener(queues = "${rabbit.refund.point.dlq.queue.name}")
+    public void refundPointDlq(String message){
+        log.error("{}변환불가",message);
     }
 
     @Override

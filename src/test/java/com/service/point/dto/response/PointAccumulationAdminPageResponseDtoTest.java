@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
     @Test
      void testSetterAndGetter() {
         // Given
-        Long pointAccumulationAmount = 100;
+        Long pointAccumulationAmount = 100L;
         String pointAccumulationHistoryDate = "2023-07-15";
         String pointAccumulationType = "TypeA";
         String clientName = "John Doe";

@@ -1,5 +1,6 @@
 package com.service.point.dto.request;
 
+import com.service.point.dto.message.PointUsagePaymentMessageDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
     @Test
      void testNoArgsConstructor() {
         // Given
-        PointUsageRefundRequestDto dto;
+        PointUsagePaymentMessageDto dto;
 
         // When
-        dto = new PointUsageRefundRequestDto();
+        dto = new PointUsagePaymentMessageDto();
 
         // Then
         assertEquals(null, dto.getPointUsagePayment()); // Check default value for Long (null)
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         Long pointUsagePayment = 200L;
 
         // When
-        PointUsageRefundRequestDto dto = new PointUsageRefundRequestDto();
+        PointUsagePaymentMessageDto dto = new PointUsagePaymentMessageDto();
         dto.setPointUsagePayment(pointUsagePayment);
 
         // Then

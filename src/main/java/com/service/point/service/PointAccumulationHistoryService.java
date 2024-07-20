@@ -1,7 +1,7 @@
 package com.service.point.service;
 
 import com.service.point.dto.request.PointRewardOrderRequestDto;
-import com.service.point.dto.request.PointRewardRefundRequestDto;
+import com.service.point.dto.message.PointRewardRefundMessageDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import org.springframework.data.domain.Page;
@@ -39,10 +39,9 @@ public interface PointAccumulationHistoryService {
      *  환불정보를 받아 회원에게 포인트를 지급하는 함수
      *
      * @author jjeonmin
-     * @param headers 회원의 아이디 정보
-     * @param pointRewardRefundRequestDto 환불정보를 가지는 DTO
+     * @param message 환불정보를 가지는 DTO
      */
-    void refundPoint(HttpHeaders headers, PointRewardRefundRequestDto pointRewardRefundRequestDto);
+    void refundPoint(String message);
 
     /**
      *  페이지와, 한 페이지의 사이즈를 인자로 받아 유저의 포인트 지급내역을 반환하는 함수 (권한 필요)

@@ -1,8 +1,9 @@
-package com.nhnacademy.servicereview_v2.config;
+package com.service.point.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +13,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 @Slf4j
 @Configuration
@@ -51,11 +50,7 @@ public class KeyManagerConfig {
     @Value("${secret.key.mysql.password}")
     private String mysqlPasswordKey;
 
-    @Value("${secret.key.image.manager.app.key}")
-    private String imageManagerAppKeyKey;
 
-    @Value("${secret.key.image.manager.secret.key}")
-    private String imageManagerSecretKeyKey;
 
     private static final String BASE_URL = "https://api-keymanager.nhncloudservice.com/keymanager/v1.2/appkey/";
 
@@ -108,19 +103,7 @@ public class KeyManagerConfig {
         return mysqlUsername;
     }
 
-    @Bean
-    public String imageManagerAppKey() {
-        String imageManagerAppKey = getKey(getSecret(imageManagerAppKeyKey));
-        log.info("Image Manager App Key Key: {}", imageManagerAppKey);
-        return imageManagerAppKey;
-    }
 
-    @Bean
-    public String imageManagerAppSecret() {
-        String imageManagerSecretKey = getKey(getSecret(imageManagerSecretKeyKey));
-        log.info("Image Manager Secret Key Key: {}", imageManagerSecretKey);
-        return imageManagerSecretKey;
-    }
 
     @Bean
     public ObjectMapper objectMapper() {

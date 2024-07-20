@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
      void testSetterAndGetter() {
         // Given
         String pointAccumulationType = "TypeA";
-        Long pointValue = 100;
+        Long pointValue = 100L;
 
         // When
         PointPolicyDetailResponseDto dto = new PointPolicyDetailResponseDto();

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
      void testSetterAndGetter() {
         // Given
         String pointUsageHistoryDate = "2023-01-15";
-        Long pointUsageAmount = 50;
+        Long pointUsageAmount = 50L;
         String pointUsageType = "Payment";
 
         // When

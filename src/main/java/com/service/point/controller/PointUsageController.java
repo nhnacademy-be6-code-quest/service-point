@@ -1,7 +1,6 @@
 package com.service.point.controller;
 
-import com.service.point.dto.request.PointUsagePaymentRequestDto;
-import com.service.point.dto.request.PointUsageRefundRequestDto;
+import com.service.point.dto.message.PointUsagePaymentMessageDto;
 import com.service.point.dto.response.PointUsageAdminPageResponseDto;
 import com.service.point.dto.response.PointUsageMyPageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,22 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "포인트 사용내역", description = "포인트 사용내역 관련 API")
 public interface PointUsageController {
 
-    @Operation(
-        summary = "포인트 사용내역",
-        description = "Refund - 사용자 환불시 적립포인트 사용",
-        responses = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Success"
-            )
-        }
-    )
-    @PostMapping("/api/point/use/refund")
-    ResponseEntity<String> useRefundPoint(
-        @Parameter(description = "결제시 적립받은 포인트양")
-        @RequestBody PointUsageRefundRequestDto pointUsageRefundRequestDto,
-        @Parameter(description = "사용자 아이디")
-        @RequestHeader HttpHeaders headers);
+
 
     @Operation(
         summary = "포인트 적립내역",

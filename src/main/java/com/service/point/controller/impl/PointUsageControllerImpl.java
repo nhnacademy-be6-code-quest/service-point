@@ -1,8 +1,7 @@
 package com.service.point.controller.impl;
 
 import com.service.point.controller.PointUsageController;
-import com.service.point.dto.request.PointUsagePaymentRequestDto;
-import com.service.point.dto.request.PointUsageRefundRequestDto;
+import com.service.point.dto.message.PointUsagePaymentMessageDto;
 import com.service.point.dto.response.PointUsageAdminPageResponseDto;
 import com.service.point.dto.response.PointUsageMyPageResponseDto;
 import com.service.point.service.PointUsageHistoryService;
@@ -24,18 +23,7 @@ public class PointUsageControllerImpl implements PointUsageController {
 
     private final PointUsageHistoryService pointUsageHistoryService;
 
-    @PostMapping("/api/point/use/refund")
-    @Override
-    public ResponseEntity<String> useRefundPoint(
-        @RequestBody PointUsageRefundRequestDto pointUsageRefundRequestDto,
-        @RequestHeader HttpHeaders headers) {
-        try {
-            pointUsageHistoryService.usedRefundPoint(pointUsageRefundRequestDto, headers);
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
-        }
-    }
+
 
     @GetMapping("/api/point/myPage/use")
     @Override

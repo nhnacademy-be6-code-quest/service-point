@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
     @Test
      void testSetterAndGetter() {
         // Given
-        Long totalPoint = 1000;
-        Long pointAccumulationRate = 5;
+        Long totalPoint = 1000L;
+        Long pointAccumulationRate = 5L;
 
         // When
         TotalPointAmountResponseDto dto = new TotalPointAmountResponseDto();

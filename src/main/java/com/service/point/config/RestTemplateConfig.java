@@ -1,4 +1,4 @@
-package com.nhnacademy.servicereview_v2.config;
+package com.service.point.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

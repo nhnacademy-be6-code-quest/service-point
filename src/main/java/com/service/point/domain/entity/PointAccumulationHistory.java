@@ -30,4 +30,7 @@ public class PointAccumulationHistory {
         this.pointAccumulationHistoryDate=LocalDate.now();
         this.pointAccumulationAmount=pointAccumulationAmount;
     }
+    public void updateAccumulationPoint(long pointAccumulationAmount){
+        this.pointAccumulationAmount=pointAccumulationAmount;
+    }
 }
