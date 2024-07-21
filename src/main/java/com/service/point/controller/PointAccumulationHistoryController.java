@@ -69,7 +69,7 @@ public interface PointAccumulationHistoryController {
         }
     )
     @GetMapping("/api/point/adminPage/reward")
-    ResponseEntity<Page<PointAccumulationAdminPageResponseDto>> findUserPoint(
+    ResponseEntity<Page<PointAccumulationAdminPageResponseDto>> findUserPoint(@RequestHeader HttpHeaders headers,
         @Parameter(description = "페이지")
         @RequestParam int page,
         @Parameter(description = "페이지에 보여줄 개수")

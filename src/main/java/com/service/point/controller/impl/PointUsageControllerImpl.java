@@ -30,7 +30,7 @@ public class PointUsageControllerImpl implements PointUsageController {
 
     @GetMapping("/api/point/adminPage/use")
     @Override
-    public ResponseEntity<Page<PointUsageAdminPageResponseDto>> usedUserPoint(
+    public ResponseEntity<Page<PointUsageAdminPageResponseDto>> usedUserPoint(@RequestHeader HttpHeaders headers,
         @RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok(pointUsageHistoryService.useUserPoint(page, size));
     }

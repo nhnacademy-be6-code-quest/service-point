@@ -182,7 +182,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
     }
 
     @Override
-    public Page<PointAccumulationAdminPageResponseDto> rewardUserPoint(int page, int size) {
+    public Page<PointAccumulationAdminPageResponseDto> rewardUserPoint(HttpHeaders headers, int page, int size) {
 
         PageRequest pageRequest = PageRequest.of(page, size,
             Sort.by(Direction.DESC, "PointAccumulationHistoryDate"));
@@ -193,7 +193,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             PointPolicy pointPolicy = pointPolicyRepository.findById(
                     points.getPointPolicy().getPointPolicyId())
                 .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
-            ClientNameResponseDto clientNameResponseDto = userNameClient.getClientName(
+            ClientNameResponseDto clientNameResponseDto = userNameClient.getClientName(headers,
                 points.getClientId()).getBody();
 
             pointAccumulationAdminPageResponseDto.setPointAccumulationHistoryDate(

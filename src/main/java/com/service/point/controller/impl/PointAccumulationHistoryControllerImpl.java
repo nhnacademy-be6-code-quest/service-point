@@ -49,9 +49,9 @@ public class PointAccumulationHistoryControllerImpl implements PointAccumulation
     }
 
     @GetMapping("/api/point/adminPage/reward")
-    public ResponseEntity<Page<PointAccumulationAdminPageResponseDto>> findUserPoint(
+    public ResponseEntity<Page<PointAccumulationAdminPageResponseDto>> findUserPoint(@RequestHeader HttpHeaders headers,
         @RequestParam int page, @RequestParam int size) {
-        return ResponseEntity.ok(pointAccumulationHistoryService.rewardUserPoint(page, size));
+        return ResponseEntity.ok(pointAccumulationHistoryService.rewardUserPoint(headers, page, size));
     }
 
     @DeleteMapping("/api/point/adminPage/delete/{pointAccumulationHistoryId}")
