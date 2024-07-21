@@ -46,6 +46,8 @@ public class SecurityConfig {
                     HttpMethod.PUT.name(), List.of(ADMIN_ROLE)),
                 new HeaderFilter.RouteConfig(URI.create("/api/point/policy/active"),
                     HttpMethod.PUT.name(), List.of(ADMIN_ROLE)),
+                new HeaderFilter.RouteConfig(URI.create("/api/point/adminPage/reward"),
+                    HttpMethod.PUT.name(), List.of(ADMIN_ROLE)),
                 new HeaderFilter.RouteConfig(URI.create("/api/point/use/payment"),
                     HttpMethod.POST.name(), Collections.emptyList()),
                 new HeaderFilter.RouteConfig(URI.create("/api/point/use/refund"),

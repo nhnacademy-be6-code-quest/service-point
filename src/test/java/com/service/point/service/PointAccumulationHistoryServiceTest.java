@@ -1,5 +1,11 @@
 package com.service.point.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.point.config.MemberShipMessageDto;
 import com.service.point.config.ReviewMessageDto;
@@ -8,8 +14,6 @@ import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
 import com.service.point.exception.ClientNotFoundException;
-import com.service.point.exception.PointPolicyNotFoundException;
-import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
 import com.service.point.service.impl.PointAccumulationHistoryServiceImpl;
@@ -20,9 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpHeaders;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
  class PointAccumulationHistoryServiceTest {
 
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.*;
         MockitoAnnotations.openMocks(this);
     }
 
-    
+
 
     @Test
      void testOrderPoint_ClientNotFound() {
@@ -61,7 +62,7 @@ import static org.mockito.Mockito.*;
 
 
     @Test
-    public void testReviewPoint_WithImage() throws IOException {
+    void testReviewPoint_WithImage() throws IOException {
         // Given
         ReviewMessageDto reviewMessageDto = new ReviewMessageDto();
         reviewMessageDto.setClientId(1L);
@@ -82,7 +83,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-    public void testReviewPoint_WithoutImage() throws IOException {
+    void testReviewPoint_WithoutImage() throws IOException {
         // Given
         ReviewMessageDto reviewMessageDto = new ReviewMessageDto();
         reviewMessageDto.setClientId(1L);

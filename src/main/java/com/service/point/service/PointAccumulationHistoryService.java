@@ -1,7 +1,6 @@
 package com.service.point.service;
 
 import com.service.point.dto.request.PointRewardOrderRequestDto;
-import com.service.point.dto.message.PointRewardRefundMessageDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import org.springframework.data.domain.Page;
