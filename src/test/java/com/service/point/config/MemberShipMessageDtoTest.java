@@ -30,8 +30,7 @@ class MemberShipMessageDtoTest {
         dto.setClientId(123L);
 
         String json = objectMapper.writeValueAsString(dto);
-        assertThat(json).isNotNull();
-        assertThat(json).contains("\"clientId\":123");
+        assertThat(json).isNotNull().contains("\"clientId\":123");
     }
 
     @Test
