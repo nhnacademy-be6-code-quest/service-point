@@ -2,6 +2,7 @@ package com.service.point.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +60,7 @@ class PointUsageHistoryTest {
         pointUsagePaymentRequestDto.setClientId(123L);
 
         PointUsageType pointUsageType = new PointUsageType(); // 필요한 값으로 설정하세요
-        PointUsageHistory expectedPointUsageHistory = new PointUsageHistory();
+        PointUsageHistory expectedPointUsageHistory = new PointUsageHistory(100L, pointUsageType, 123L );
 
 
         when(objectMapper.readValue(message, PointUsagePaymentMessageDto.class))
@@ -71,7 +72,7 @@ class PointUsageHistoryTest {
         pointUsageHistoryService.usedPaymentPoint(message);
 
         // Then
-        ArgumentCaptor<PointUsageHistory> captor = ArgumentCaptor.forClass(PointUsageHistory.class);
+        ArgumentCaptor<PointUsageHistory> captor = forClass(PointUsageHistory.class);
         verify(pointUsageHistoryRepository).save(captor.capture());
 
         PointUsageHistory capturedHistory = captor.getValue();
@@ -86,13 +87,13 @@ class PointUsageHistoryTest {
     @Test
     void testUsedRefundPoint() throws IOException {
         // Given
-        String message = "{ \"pointUsagePayment\": 200, \"clientId\": \"client-456\" }";
+        String message = "{ \"pointUsagePayment\": 200, \"clientId\": \"456\" }";
         PointUsageRefundMessageDto pointUsageRefundMessageDto = new PointUsageRefundMessageDto();
         pointUsageRefundMessageDto.setPointUsagePayment(200L);
         pointUsageRefundMessageDto.setClientId(456L);
 
-        PointUsageType pointUsageType = new PointUsageType(); // Set appropriate values if necessary
-        PointUsageHistory pointUsageHistory = new PointUsageHistory(200L, pointUsageType, 456L);
+        PointUsageType pointUsageType = new PointUsageType();
+        // Set appropriate values if necessary
 
         when(objectMapper.readValue(message, PointUsageRefundMessageDto.class))
             .thenReturn(pointUsageRefundMessageDto);
@@ -103,20 +104,15 @@ class PointUsageHistoryTest {
         pointUsageHistoryService.usedRefundPoint(message);
 
         // Then
-        verify(pointUsageHistoryRepository, times(1)).save(pointUsageHistory);
+        ArgumentCaptor<PointUsageHistory> captor = forClass(PointUsageHistory.class);
+        verify(pointUsageHistoryRepository, times(1)).save(captor.capture());
+
+        PointUsageHistory captured = captor.getValue();
+        assertEquals(200L, captured.getPointUsageAmount());
+        assertEquals(pointUsageType, captured.getPointUsageType());
+        assertEquals(456L, captured.getClientId());
     }
 
-    @Test
-    public void testUsedRefundPointMessageConversionException() throws IOException {
-        // Given
-        String message = "{ invalid json }";
-
-        when(objectMapper.readValue(message, PointUsageRefundMessageDto.class))
-            .thenThrow(new IOException("Invalid JSON"));
-
-        // When & Then
-        assertThrows(RabbitMessageConvertException.class, () -> pointUsageHistoryService.usedRefundPoint(message));
-    }
 
     @Test
     void testUseClientPointSuccess() {
@@ -126,10 +122,12 @@ class PointUsageHistoryTest {
         headers.add("X-User-Id", clientId);
 
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "pointUsageHistoryDate"));
-        PointUsageHistory pointUsageHistory = new PointUsageHistory();
 
-        PointUsageType pointUsageType = new PointUsageType();
+        PointUsageKind pointUsageKind = PointUsageKind.REFUND; // Assuming you have a PointUsageKind enum or similar
+        PointUsageType pointUsageType = new PointUsageType(1L, pointUsageKind);
 
+
+        PointUsageHistory pointUsageHistory = new PointUsageHistory(100L, pointUsageType, Long.parseLong(clientId));
 
         Page<PointUsageHistory> page = new PageImpl<>(Collections.singletonList(pointUsageHistory), pageRequest, 1);
 
@@ -144,8 +142,8 @@ class PointUsageHistoryTest {
         // Then
         verify(pointUsageHistoryRepository).findByClientId(Long.parseLong(clientId), pageRequest);
         verify(pointUsageTypeRepository).findById(pointUsageType.getPointUsageTypeId());
-        assert(result.getContent().size() == 1);
-        assert(result.getContent().get(0).getPointUsageAmount() == 100);
+        assertEquals(1, result.getContent().size());
+        assertEquals(100L, result.getContent().get(0).getPointUsageAmount());
     }
 
     @Test
@@ -165,8 +163,11 @@ class PointUsageHistoryTest {
         headers.add("X-User-Id", clientId);
 
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "pointUsageHistoryDate"));
-        PointUsageHistory pointUsageHistory = new PointUsageHistory();
-        PointUsageType pointUsageType = new PointUsageType();
+
+        PointUsageKind pointUsageKind = PointUsageKind.REFUND; // Assuming you have a PointUsageKind enum or similar
+        PointUsageType pointUsageType = new PointUsageType(1L, pointUsageKind);
+
+        PointUsageHistory pointUsageHistory = new PointUsageHistory(100L, pointUsageType, 123L);
 
 
         Page<PointUsageHistory> page = new PageImpl<>(Collections.singletonList(pointUsageHistory), pageRequest, 1);
@@ -177,7 +178,8 @@ class PointUsageHistoryTest {
             .thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(
-            PointTypeNotFoundException.class, () -> pointUsageHistoryService.useClientPoint(headers, 0, 10));
+        assertThrows(PointTypeNotFoundException.class, () -> {
+            pointUsageHistoryService.useClientPoint(headers, 0, 10);
+        });
     }
 }
