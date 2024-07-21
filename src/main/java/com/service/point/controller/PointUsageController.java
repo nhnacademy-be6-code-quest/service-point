@@ -48,7 +48,7 @@ public interface PointUsageController {
         }
     )
     @GetMapping("/api/point/adminPage/use")
-    ResponseEntity<Page<PointUsageAdminPageResponseDto>> usedUserPoint(
+    ResponseEntity<Page<PointUsageAdminPageResponseDto>> usedUserPoint(@RequestHeader HttpHeaders headers,
         @Parameter(description = "페이지")
         @RequestParam int page,
         @Parameter(description = "페이지에 보여줄 개수")

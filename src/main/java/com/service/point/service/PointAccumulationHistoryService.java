@@ -61,7 +61,7 @@ public interface PointAccumulationHistoryService {
      * @param size 한페이지 내의 보여질 정보의 갯수
      * @return 해당하는 페이지의 유저 포인트 지급내역 페이지를 반환
      */
-    Page<PointAccumulationAdminPageResponseDto> rewardUserPoint(int page, int size);
+    Page<PointAccumulationAdminPageResponseDto> rewardUserPoint(HttpHeaders headers,int page, int size);
 
     /**
      * 사용자의 포인트 지급내역을 삭제하는 반환하는 함수 (관리자 권한 필요)
