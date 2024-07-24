@@ -65,14 +65,4 @@ public class PointAccumulationHistoryControllerImpl implements PointAccumulation
         }
     }
 
-    @ExceptionHandler(ClientNotFoundException.class)
-    public ResponseEntity<String> handleClientNotFoundException(ClientNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(PointPolicyNotFoundException.class)
-    public ResponseEntity<String> handlePointPolicyNotFoundException(
-        PointPolicyNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
 }

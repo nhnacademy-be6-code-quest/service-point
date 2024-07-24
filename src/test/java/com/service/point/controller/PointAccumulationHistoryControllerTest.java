@@ -3,14 +3,18 @@ package com.service.point.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.point.controller.impl.PointAccumulationHistoryControllerImpl;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
+import com.service.point.exception.ClientNotFoundException;
+import com.service.point.exception.PointPolicyNotFoundException;
 import com.service.point.service.PointAccumulationHistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 class PointAccumulationHistoryControllerTest {
@@ -84,6 +89,5 @@ class PointAccumulationHistoryControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$").value("fail"));
     }
-
 
 }

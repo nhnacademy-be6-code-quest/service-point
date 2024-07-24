@@ -75,10 +75,4 @@ public interface PointAccumulationHistoryController {
         @Parameter(description = "페이지에 보여줄 개수")
         @RequestParam int size);
 
-    @ExceptionHandler(ClientNotFoundException.class)
-    ResponseEntity<String> handleClientNotFoundException(ClientNotFoundException e);
-
-    @ExceptionHandler(PointPolicyNotFoundException.class)
-    ResponseEntity<String> handlePointPolicyNotFoundException(
-        PointPolicyNotFoundException e);
 }
