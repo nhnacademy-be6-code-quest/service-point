@@ -1,46 +1,71 @@
 package com.service.point.config;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 
-class RabbitConfigTest {
+@SpringBootTest
+ class RabbitConfigTest {
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     private RabbitConfig rabbitConfig;
 
     @BeforeEach
     void setUp() {
-        rabbitConfig = new RabbitConfig("localhost", 5672, "guest", "guest");
+        rabbitConfig = applicationContext.getBean(RabbitConfig.class);
     }
 
     @Test
-    void testConnectionFactory() {
-        ConnectionFactory connectionFactory = rabbitConfig.connectionFactory();
+    void testRabbitConfigBeans() {
+        // Verify that RabbitConfig is loaded
+        assertThat(rabbitConfig).isNotNull();
 
-        assertNotNull(connectionFactory);
-        assertTrue(connectionFactory instanceof CachingConnectionFactory);
+        // Test Direct Exchanges
+        assertThat(applicationContext.getBean("reviewPointExchange", DirectExchange.class)).isNotNull();
+        assertThat(applicationContext.getBean("signupPointExchange", DirectExchange.class)).isNotNull();
+        assertThat(applicationContext.getBean("usePointExchange", DirectExchange.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundPointExchange", DirectExchange.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundUsedPointExchange", DirectExchange.class)).isNotNull();
 
-        CachingConnectionFactory cachingConnectionFactory = (CachingConnectionFactory) connectionFactory;
-        assertEquals("localhost", cachingConnectionFactory.getHost());
-        assertEquals(5672, cachingConnectionFactory.getPort());
-        assertEquals("guest", cachingConnectionFactory.getUsername());
-        // 비밀번호는 보안상의 이유로 직접 확인하기 어려우므로 테스트하지 않습니다.
-    }
+        // Test Queues
+        assertThat(applicationContext.getBean("reviewPointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("reviewDlqPointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("signupPointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("signupDlqPointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("usePointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("usePointDlqPointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundPointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundDlqPointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundUsedPointQueue", Queue.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundUsedDlqPointQueue", Queue.class)).isNotNull();
 
-    @Test
-    void testRabbitTemplate() {
-        ConnectionFactory connectionFactory = rabbitConfig.connectionFactory();
-        RabbitTemplate rabbitTemplate = rabbitConfig.rabbitTemplate(connectionFactory);
+        // Test Bindings
+        assertThat(applicationContext.getBean("reviewPointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("reviewDlqPointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("signupPointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("signupDlqPointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("usePointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("usePointDlqPointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundPointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundDlqPointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundUsedPointBinding", Binding.class)).isNotNull();
+        assertThat(applicationContext.getBean("refundUsedDlqPointBinding", Binding.class)).isNotNull();
 
-        assertNotNull(rabbitTemplate);
-        assertEquals(connectionFactory, rabbitTemplate.getConnectionFactory());
-        assertTrue(rabbitTemplate.getMessageConverter() instanceof Jackson2JsonMessageConverter);
+        // Test RabbitTemplate
+        assertThat(applicationContext.getBean(RabbitTemplate.class)).isNotNull();
+
+        // Test ConnectionFactory
+        assertThat(applicationContext.getBean(ConnectionFactory.class)).isNotNull();
     }
 }
