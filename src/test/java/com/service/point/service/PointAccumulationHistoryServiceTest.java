@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,7 @@ import com.service.point.dto.response.ClientNameResponseDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
+import com.service.point.exception.PointPolicyNotFoundException;
 import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
@@ -44,7 +46,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-class PointAccumulationHistoryServiceImplTest {
+class PointAccumulationHistoryServiceTest {
 
     @Mock
     private UserNameClient userNameClient;
@@ -225,5 +227,43 @@ class PointAccumulationHistoryServiceImplTest {
         pointAccumulationHistoryService.deletePoint(1L);
 
         verify(pointPolicyRepository, times(1)).deleteById(1L);
+    }
+    @Test
+    void testReviewPointWithNoImage() throws Exception {
+        // Given
+        String message = "{\"hasImage\": false, \"clientId\": 123}";
+        ReviewMessageDto reviewMessageDto = new ReviewMessageDto();
+        reviewMessageDto.setClientId(123L);
+        reviewMessageDto.setHasImage(false);
+
+        PointPolicy pointPolicy = new PointPolicy();
+        pointPolicy.setPointValue(10L);
+
+        when(objectMapper.readValue(message, ReviewMessageDto.class)).thenReturn(reviewMessageDto);
+        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE)).thenReturn(pointPolicy);
+
+        // When
+        pointAccumulationHistoryService.reviewPoint(message);
+
+        // Then
+        verify(pointAccumulationHistoryRepository, times(1)).save(any(PointAccumulationHistory.class));
+        verify(pointPolicyRepository, times(1)).findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE);
+    }
+
+    @Test
+    void testReviewPointWithNoImageAndNoPolicyFound() throws Exception {
+        // Given
+        String message = "{\"hasImage\": false, \"clientId\": 123}";
+        ReviewMessageDto reviewMessageDto = new ReviewMessageDto();
+        reviewMessageDto.setHasImage(false);
+        reviewMessageDto.setClientId(123L);
+        when(objectMapper.readValue(message, ReviewMessageDto.class)).thenReturn(reviewMessageDto);
+        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE)).thenReturn(null);
+
+        // When & Then
+        assertThrows(PointPolicyNotFoundException.class, () -> pointAccumulationHistoryService.reviewPoint(message));
+
+        verify(pointAccumulationHistoryRepository, never()).save(any(PointAccumulationHistory.class));
+        verify(pointPolicyRepository, times(1)).findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE);
     }
 }
