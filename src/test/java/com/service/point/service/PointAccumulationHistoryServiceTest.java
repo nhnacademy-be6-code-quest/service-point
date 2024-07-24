@@ -1,5 +1,16 @@
 package com.service.point.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.point.client.UserNameClient;
 import com.service.point.client.UserRankClient;
@@ -8,40 +19,30 @@ import com.service.point.config.ReviewMessageDto;
 import com.service.point.domain.PointStatus;
 import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;
-import com.service.point.dto.request.PointRewardOrderRequestDto;
 import com.service.point.dto.message.PointRewardRefundMessageDto;
+import com.service.point.dto.request.PointRewardOrderRequestDto;
 import com.service.point.dto.response.ClientGradeRateResponseDto;
 import com.service.point.dto.response.ClientNameResponseDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
-import com.service.point.exception.PointPolicyNotFoundException;
 import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
-import com.service.point.service.PointAccumulationHistoryService;
 import com.service.point.service.impl.PointAccumulationHistoryServiceImpl;
-import java.awt.Point;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Optional;
 import org.springframework.http.ResponseEntity;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 class PointAccumulationHistoryServiceImplTest {
 

@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(TotalPointControllerImpl.class)
-public class TotalPointControllerTest {
+class TotalPointControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
