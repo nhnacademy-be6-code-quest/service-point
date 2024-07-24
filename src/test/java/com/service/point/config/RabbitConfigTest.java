@@ -93,6 +93,25 @@ class RabbitConfigTest {
     }
 
     @Test
+    void testSignupDlqQueue() {
+        Queue queue = rabbitConfig.signupDlqPointQueue();
+        assertNotNull(queue);
+        assertEquals("signup.dlq.queue", queue.getName());
+        assertTrue(queue.isDurable());
+    }
+
+    @Test
+    void testSignupDlqBinding() {
+        Queue dlqQueue = rabbitConfig.signupDlqPointQueue();
+        DirectExchange exchange = rabbitConfig.signupPointExchange();
+        Binding binding = rabbitConfig.signupDlqPointBinding();
+
+        assertNotNull(binding);
+        assertEquals(Binding.DestinationType.QUEUE, binding.getDestinationType());
+        assertEquals("signup.dlq.key", binding.getRoutingKey());
+    }
+
+    @Test
     void testRabbitTemplate() {
         RabbitTemplate template = rabbitConfig.rabbitTemplate(mockConnectionFactory);
         assertNotNull(template);
@@ -126,5 +145,157 @@ class RabbitConfigTest {
         assertEquals("review.key", binding.getRoutingKey());
     }
 
-    // Add similar tests for `usePointExchange`, `refundPointExchange`, `refundUsedPointExchange`, etc.
+    @Test
+    void testReviewDlqQueue() {
+        Queue dlqQueue = rabbitConfig.reviewDlqPointQueue();
+        assertNotNull(dlqQueue);
+        assertEquals("review.dlq.queue", dlqQueue.getName());
+        assertTrue(dlqQueue.isDurable());
+    }
+
+    @Test
+    void testReviewDlqBinding() {
+        Queue dlqQueue = rabbitConfig.reviewDlqPointQueue();
+        DirectExchange exchange = rabbitConfig.reviewPointExchange();
+        Binding binding = rabbitConfig.reviewDlqPointBinding();
+
+        assertNotNull(binding);
+        assertEquals(Binding.DestinationType.QUEUE, binding.getDestinationType());
+        assertEquals("review.dlq.key", binding.getRoutingKey());
+    }
+
+    @Test
+    void testUsePointExchange() {
+        DirectExchange exchange = rabbitConfig.usePointExchange();
+        assertNotNull(exchange);
+        assertEquals("use.exchange", exchange.getName());
+    }
+
+    @Test
+    void testUsePointQueue() {
+        Queue queue = rabbitConfig.usePointQueue();
+        assertNotNull(queue);
+        assertEquals("use.queue", queue.getName());
+        assertTrue(queue.isDurable());
+    }
+
+    @Test
+    void testUsePointBinding() {
+        Queue queue = rabbitConfig.usePointQueue();
+        DirectExchange exchange = rabbitConfig.usePointExchange();
+        Binding binding = rabbitConfig.usePointBinding();
+
+        assertNotNull(binding);
+        assertEquals(Binding.DestinationType.QUEUE, binding.getDestinationType());
+        assertEquals("use.key", binding.getRoutingKey());
+    }
+
+    @Test
+    void testUsePointDlqQueue() {
+        Queue dlqQueue = rabbitConfig.usePointDlqPointQueue();
+        assertNotNull(dlqQueue);
+        assertEquals("use.dlq.queue", dlqQueue.getName());
+        assertTrue(dlqQueue.isDurable());
+    }
+
+    @Test
+    void testUsePointDlqBinding() {
+        Queue dlqQueue = rabbitConfig.usePointDlqPointQueue();
+        DirectExchange exchange = rabbitConfig.usePointExchange();
+        Binding binding = rabbitConfig.usePointDlqPointBinding();
+
+        assertNotNull(binding);
+        assertEquals(Binding.DestinationType.QUEUE, binding.getDestinationType());
+        assertEquals("use.dlq.key", binding.getRoutingKey());
+    }
+
+    @Test
+    void testRefundPointExchange() {
+        DirectExchange exchange = rabbitConfig.refundPointExchange();
+        assertNotNull(exchange);
+        assertEquals("refund.exchange", exchange.getName());
+    }
+
+    @Test
+    void testRefundPointQueue() {
+        Queue queue = rabbitConfig.refundPointQueue();
+        assertNotNull(queue);
+        assertEquals("refund.queue", queue.getName());
+        assertTrue(queue.isDurable());
+    }
+
+    @Test
+    void testRefundPointBinding() {
+        Queue queue = rabbitConfig.refundPointQueue();
+        DirectExchange exchange = rabbitConfig.refundPointExchange();
+        Binding binding = rabbitConfig.refundPointBinding();
+
+        assertNotNull(binding);
+        assertEquals(Binding.DestinationType.QUEUE, binding.getDestinationType());
+        assertEquals("refund.key", binding.getRoutingKey());
+    }
+
+    @Test
+    void testRefundPointDlqQueue() {
+        Queue dlqQueue = rabbitConfig.refundDlqPointQueue();
+        assertNotNull(dlqQueue);
+        assertEquals("refund.dlq.queue", dlqQueue.getName());
+        assertTrue(dlqQueue.isDurable());
+    }
+
+    @Test
+    void testRefundPointDlqBinding() {
+        Queue dlqQueue = rabbitConfig.refundDlqPointQueue();
+        DirectExchange exchange = rabbitConfig.refundPointExchange();
+        Binding binding = rabbitConfig.refundDlqPointBinding();
+
+        assertNotNull(binding);
+        assertEquals(Binding.DestinationType.QUEUE, binding.getDestinationType());
+        assertEquals("refund.dlq.key", binding.getRoutingKey());
+    }
+
+    @Test
+    void testRefundUsedPointExchange() {
+        DirectExchange exchange = rabbitConfig.refundUsedPointExchange();
+        assertNotNull(exchange);
+        assertEquals("refundUsed.exchange", exchange.getName());
+    }
+
+    @Test
+    void testRefundUsedPointQueue() {
+        Queue queue = rabbitConfig.refundUsedPointQueue();
+        assertNotNull(queue);
+        assertEquals("refundUsed.queue", queue.getName());
+        assertTrue(queue.isDurable());
+    }
+
+    @Test
+    void testRefundUsedPointBinding() {
+        Queue queue = rabbitConfig.refundUsedPointQueue();
+        DirectExchange exchange = rabbitConfig.refundUsedPointExchange();
+        Binding binding = rabbitConfig.refundUsedPointBinding();
+
+        assertNotNull(binding);
+        assertEquals(Binding.DestinationType.QUEUE, binding.getDestinationType());
+        assertEquals("refundUsed.key", binding.getRoutingKey());
+    }
+
+    @Test
+    void testRefundUsedPointDlqQueue() {
+        Queue dlqQueue = rabbitConfig.refundUsedDlqPointQueue();
+        assertNotNull(dlqQueue);
+        assertEquals("refundUsed.dlq.queue", dlqQueue.getName());
+        assertTrue(dlqQueue.isDurable());
+    }
+
+    @Test
+    void testRefundUsedPointDlqBinding() {
+        Queue dlqQueue = rabbitConfig.refundUsedDlqPointQueue();
+        DirectExchange exchange = rabbitConfig.refundUsedPointExchange();
+        Binding binding = rabbitConfig.refundUsedDlqPointBinding();
+
+        assertNotNull(binding);
+        assertEquals(Binding.DestinationType.QUEUE, binding.getDestinationType());
+        assertEquals("refundUsed.dlq.key", binding.getRoutingKey());
+    }
 }
