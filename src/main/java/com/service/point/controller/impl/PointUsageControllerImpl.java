@@ -19,8 +19,6 @@ public class PointUsageControllerImpl implements PointUsageController {
 
     private final PointUsageHistoryService pointUsageHistoryService;
 
-
-
     @GetMapping("/api/point/myPage/use")
     @Override
     public ResponseEntity<Page<PointUsageMyPageResponseDto>> usedClientPoint(
