@@ -16,22 +16,20 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
- class RabbitConfigTest {
+class RabbitConfigTest {
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    private RabbitConfig rabbitConfig;
-
     @BeforeEach
     void setUp() {
-        rabbitConfig = applicationContext.getBean(RabbitConfig.class);
+        // No need for explicit initialization
     }
 
     @Test
     void testRabbitConfigBeans() {
         // Verify that RabbitConfig is loaded
-        assertThat(rabbitConfig).isNotNull();
+        assertThat(applicationContext.getBean(RabbitConfig.class)).isNotNull();
 
         // Test Direct Exchanges
         assertThat(applicationContext.getBean("reviewPointExchange", DirectExchange.class)).isNotNull();
