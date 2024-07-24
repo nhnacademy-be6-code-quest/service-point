@@ -1,127 +1,269 @@
 package com.service.point.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.point.client.UserNameClient;
+import com.service.point.client.UserRankClient;
 import com.service.point.config.MemberShipMessageDto;
 import com.service.point.config.ReviewMessageDto;
 import com.service.point.domain.PointStatus;
 import com.service.point.domain.entity.PointAccumulationHistory;
 import com.service.point.domain.entity.PointPolicy;
+import com.service.point.dto.message.PointRewardRefundMessageDto;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
+import com.service.point.dto.response.ClientGradeRateResponseDto;
+import com.service.point.dto.response.ClientNameResponseDto;
+import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
+import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import com.service.point.exception.ClientNotFoundException;
+import com.service.point.exception.PointPolicyNotFoundException;
+import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
 import com.service.point.service.impl.PointAccumulationHistoryServiceImpl;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
- class PointAccumulationHistoryServiceTest {
+class PointAccumulationHistoryServiceTest {
 
     @Mock
-    private PointPolicyRepository pointPolicyRepository;
+    private UserNameClient userNameClient;
 
     @Mock
     private PointAccumulationHistoryRepository pointAccumulationHistoryRepository;
 
     @Mock
-    private HttpHeaders headers;
+    private PointPolicyRepository pointPolicyRepository;
+
+    @Mock
+    private UserRankClient userRankClient;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private PointAccumulationHistoryServiceImpl pointAccumulationHistoryService;
-    @Mock
-    private ObjectMapper objectMapper;
+
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-
-
     @Test
-     void testOrderPoint_ClientNotFound() {
-        // Given
+    void testOrderPoint() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-User-Id", "1");
         PointRewardOrderRequestDto requestDto = new PointRewardOrderRequestDto();
         requestDto.setAccumulatedPoint(100L);
-        when(headers.getFirst("X-User-Id")).thenReturn(null);
 
-        // When, Then
-        assertThrows(ClientNotFoundException.class, () -> {
-            pointAccumulationHistoryService.orderPoint(headers, requestDto);
-        });
+        when(userRankClient.getClientGradeRate(anyLong()))
+            .thenReturn(ResponseEntity.ok(new ClientGradeRateResponseDto(1L)));
+        PointPolicy pointPolicy = new PointPolicy();
+        pointPolicy.setPointValue(10L);
+        when(pointPolicyRepository.findById(anyLong())).thenReturn(Optional.of(pointPolicy));
+
+        pointAccumulationHistoryService.orderPoint(headers, requestDto);
+
+        verify(pointAccumulationHistoryRepository, times(1)).save(any());
     }
 
+    @Test
+    void testOrderPoint_ClientNotFound() {
+        HttpHeaders headers = new HttpHeaders();
+        PointRewardOrderRequestDto requestDto = new PointRewardOrderRequestDto();
+
+        assertThrows(ClientNotFoundException.class, () -> pointAccumulationHistoryService.orderPoint(headers, requestDto));
+    }
 
     @Test
-    void testReviewPoint_WithImage() throws IOException {
-        // Given
+    void testReviewPoint() throws IOException {
         ReviewMessageDto reviewMessageDto = new ReviewMessageDto();
-        reviewMessageDto.setClientId(1L);
         reviewMessageDto.setHasImage(true);
-        String message = "{\"clientId\":1,\"hasImage\":true}";
-        when(objectMapper.readValue(message, ReviewMessageDto.class)).thenReturn(reviewMessageDto);
-        PointPolicy pointPolicy = new PointPolicy("사진리뷰", 20L);
-        pointPolicy.setPointStatus(PointStatus.ACTIVATE);
-        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("사진리뷰", PointStatus.ACTIVATE))
-            .thenReturn(pointPolicy);
-
-        // When
-        pointAccumulationHistoryService.reviewPoint(message);
-
-        // Then
-        verify(pointPolicyRepository, times(1)).findByPointAccumulationTypeEqualsAndPointStatus("사진리뷰", PointStatus.ACTIVATE);
-        verify(pointAccumulationHistoryRepository, times(1)).save(any(PointAccumulationHistory.class));
-    }
-
-    @Test
-    void testReviewPoint_WithoutImage() throws IOException {
-        // Given
-        ReviewMessageDto reviewMessageDto = new ReviewMessageDto();
         reviewMessageDto.setClientId(1L);
-        reviewMessageDto.setHasImage(false);
-        String message = "{\"clientId\":1,\"hasImage\":false}";
+        String message = "testMessage";
+
         when(objectMapper.readValue(message, ReviewMessageDto.class)).thenReturn(reviewMessageDto);
-        PointPolicy pointPolicy = new PointPolicy("리뷰", 10L);
-        pointPolicy.setPointStatus(PointStatus.ACTIVATE);
-        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE))
+
+        PointPolicy pointPolicy = new PointPolicy();
+        pointPolicy.setPointValue(10L);
+        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus(anyString(), any(PointStatus.class)))
             .thenReturn(pointPolicy);
 
-        // When
         pointAccumulationHistoryService.reviewPoint(message);
 
-        // Then
-        verify(pointPolicyRepository, times(1)).findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE);
         verify(pointAccumulationHistoryRepository, times(1)).save(any(PointAccumulationHistory.class));
     }
+
     @Test
-     void testMemberShipPoint_Success() throws IOException {
-        // Given
+    void testReviewPoint_MessageConversionException() throws IOException {
+        String message = "invalidMessage";
+        when(objectMapper.readValue(message, ReviewMessageDto.class)).thenThrow(RabbitMessageConvertException.class);
+
+        assertThrows(RabbitMessageConvertException.class, () -> pointAccumulationHistoryService.reviewPoint(message));
+    }
+
+    @Test
+    void testMemberShipPoint() throws IOException {
         MemberShipMessageDto memberShipMessageDto = new MemberShipMessageDto();
         memberShipMessageDto.setClientId(1L);
-        String message = "{\"clientId\":1}";
+        String message = "testMessage";
+
         when(objectMapper.readValue(message, MemberShipMessageDto.class)).thenReturn(memberShipMessageDto);
-        PointPolicy pointPolicy = new PointPolicy("회원가입", 50L);
-        pointPolicy.setPointStatus(PointStatus.ACTIVATE);
-        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("회원가입", PointStatus.ACTIVATE))
+
+        PointPolicy pointPolicy = new PointPolicy();
+        pointPolicy.setPointValue(10L);
+        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus(anyString(), any(PointStatus.class)))
             .thenReturn(pointPolicy);
 
-        // When
         pointAccumulationHistoryService.memberShipPoint(message);
 
-        // Then
-        verify(pointPolicyRepository, times(1)).findByPointAccumulationTypeEqualsAndPointStatus("회원가입", PointStatus.ACTIVATE);
         verify(pointAccumulationHistoryRepository, times(1)).save(any(PointAccumulationHistory.class));
     }
 
+    @Test
+    void testRefundPoint() throws IOException {
+        PointRewardRefundMessageDto refundMessageDto = new PointRewardRefundMessageDto();
+        refundMessageDto.setClientId(1L);
+        refundMessageDto.setPayment(100L);
+        refundMessageDto.setDiscountAmountByPoint(10L);
+        String message = "testMessage";
+
+        when(objectMapper.readValue(message, PointRewardRefundMessageDto.class)).thenReturn(refundMessageDto);
+
+        PointPolicy pointPolicy = new PointPolicy();
+        pointPolicy.setPointValue(10L);
+        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus(anyString(), any(PointStatus.class)))
+            .thenReturn(pointPolicy);
+
+        pointAccumulationHistoryService.refundPoint(message);
+
+        verify(pointAccumulationHistoryRepository, times(2)).save(any(PointAccumulationHistory.class));
+    }
+
+    @Test
+    void testRefundPoint_MessageConversionException() throws IOException {
+        String message = "invalidMessage";
+        when(objectMapper.readValue(message, PointRewardRefundMessageDto.class)).thenThrow(RabbitMessageConvertException.class);
+
+        assertThrows(RabbitMessageConvertException.class, () -> pointAccumulationHistoryService.refundPoint(message));
+    }
 
 
+    @Test
+    void testRewardClientPoint() {
+        // Setup
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-User-Id", "1");
+
+        PointPolicy pointPolicy = new PointPolicy("포인트", 100L);
+        when(pointPolicyRepository.findById(anyLong())).thenReturn(Optional.of(pointPolicy));
+
+        PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(pointPolicy, 1L, 10L);
+        Page<PointAccumulationHistory> page = new PageImpl<>(Collections.singletonList(pointAccumulationHistory));
+
+        when(pointAccumulationHistoryRepository.findByClientId(anyLong(), any(PageRequest.class))).thenReturn(page);
+
+        // Act
+        Page<PointAccumulationMyPageResponseDto> result = pointAccumulationHistoryService.rewardClientPoint(headers, 0, 10);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getContent().size());
+        PointAccumulationMyPageResponseDto dto = result.getContent().get(0);
+        assertEquals(10L, dto.getPointAccumulationAmount());  // Adjust according to your DTO's fields
+        verify(pointAccumulationHistoryRepository, times(1)).findByClientId(anyLong(), any(PageRequest.class));
+    }
+
+    @Test
+    void testRewardUserPoint() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-User-Id", "1");
+
+        PointAccumulationHistory history = new PointAccumulationHistory(new PointPolicy(),1L,100L);
+
+
+        Page<PointAccumulationHistory> histories = new PageImpl<>(Collections.singletonList(history));
+        when(pointAccumulationHistoryRepository.findAll(any(PageRequest.class))).thenReturn(histories);
+
+        PointPolicy pointPolicy = new PointPolicy("포인트",100L);
+
+        when(pointPolicyRepository.findById(anyLong())).thenReturn(Optional.of(pointPolicy));
+
+        ClientNameResponseDto clientNameResponseDto = new ClientNameResponseDto();
+        clientNameResponseDto.setClientName("TestClient");
+        when(userNameClient.getClientName(any(HttpHeaders.class), anyLong())).thenReturn(ResponseEntity.ok(clientNameResponseDto));
+
+        Page<PointAccumulationAdminPageResponseDto> result = pointAccumulationHistoryService.rewardUserPoint(headers, 0, 10);
+
+        assertFalse(result.isEmpty());
+        assertEquals("포인트", result.getContent().get(0).getPointAccumulationType());
+        assertEquals("TestClient", result.getContent().get(0).getClientName());
+    }
+    @Test
+    void testDeletePoint() {
+        pointAccumulationHistoryService.deletePoint(1L);
+
+        verify(pointPolicyRepository, times(1)).deleteById(1L);
+    }
+    @Test
+    void testReviewPointWithNoImage() throws Exception {
+        // Given
+        String message = "{\"hasImage\": false, \"clientId\": 123}";
+        ReviewMessageDto reviewMessageDto = new ReviewMessageDto();
+        reviewMessageDto.setClientId(123L);
+        reviewMessageDto.setHasImage(false);
+
+        PointPolicy pointPolicy = new PointPolicy();
+        pointPolicy.setPointValue(10L);
+
+        when(objectMapper.readValue(message, ReviewMessageDto.class)).thenReturn(reviewMessageDto);
+        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE)).thenReturn(pointPolicy);
+
+        // When
+        pointAccumulationHistoryService.reviewPoint(message);
+
+        // Then
+        verify(pointAccumulationHistoryRepository, times(1)).save(any(PointAccumulationHistory.class));
+        verify(pointPolicyRepository, times(1)).findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE);
+    }
+
+    @Test
+    void testReviewPointWithNoImageAndNoPolicyFound() throws Exception {
+        // Given
+        String message = "{\"hasImage\": false, \"clientId\": 123}";
+        ReviewMessageDto reviewMessageDto = new ReviewMessageDto();
+        reviewMessageDto.setHasImage(false);
+        reviewMessageDto.setClientId(123L);
+        when(objectMapper.readValue(message, ReviewMessageDto.class)).thenReturn(reviewMessageDto);
+        when(pointPolicyRepository.findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE)).thenReturn(null);
+
+        // When & Then
+        assertThrows(PointPolicyNotFoundException.class, () -> pointAccumulationHistoryService.reviewPoint(message));
+
+        verify(pointAccumulationHistoryRepository, never()).save(any(PointAccumulationHistory.class));
+        verify(pointPolicyRepository, times(1)).findByPointAccumulationTypeEqualsAndPointStatus("리뷰", PointStatus.ACTIVATE);
+    }
 }

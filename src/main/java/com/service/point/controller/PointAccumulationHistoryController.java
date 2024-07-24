@@ -3,8 +3,6 @@ package com.service.point.controller;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
 import com.service.point.dto.response.PointAccumulationAdminPageResponseDto;
 import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
-import com.service.point.exception.ClientNotFoundException;
-import com.service.point.exception.PointPolicyNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,10 +72,4 @@ public interface PointAccumulationHistoryController {
         @Parameter(description = "페이지에 보여줄 개수")
         @RequestParam int size);
 
-    @ExceptionHandler(ClientNotFoundException.class)
-    ResponseEntity<String> handleClientNotFoundException(ClientNotFoundException e);
-
-    @ExceptionHandler(PointPolicyNotFoundException.class)
-    ResponseEntity<String> handlePointPolicyNotFoundException(
-        PointPolicyNotFoundException e);
 }
