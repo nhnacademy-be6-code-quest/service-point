@@ -9,9 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.service.point.controller.impl.PointAccumulationHistoryControllerImpl;
+import com.service.point.controller.impl.PointAccumulationControllerImpl;
 import com.service.point.dto.request.PointRewardOrderRequestDto;
-import com.service.point.service.PointAccumulationHistoryService;
+import com.service.point.service.PointAccumulationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,10 +25,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 class PointAccumulationHistoryControllerTest {
 
     @InjectMocks
-    private PointAccumulationHistoryControllerImpl pointAccumulationHistoryController;
+    private PointAccumulationControllerImpl pointAccumulationHistoryController;
 
     @Mock
-    private PointAccumulationHistoryService pointAccumulationHistoryService;
+    private PointAccumulationService pointAccumulationService;
 
     private MockMvc mockMvc;
 
@@ -56,7 +56,7 @@ class PointAccumulationHistoryControllerTest {
         PointRewardOrderRequestDto requestDto = new PointRewardOrderRequestDto();
         // Populate requestDto with necessary data
 
-        doThrow(new RuntimeException("Failure")).when(pointAccumulationHistoryService).orderPoint(any(HttpHeaders.class), any(PointRewardOrderRequestDto.class));
+        doThrow(new RuntimeException("Failure")).when(pointAccumulationService).orderPoint(any(HttpHeaders.class), any(PointRewardOrderRequestDto.class));
 
         mockMvc.perform(post("/api/point/order")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer test-token")
@@ -77,7 +77,7 @@ class PointAccumulationHistoryControllerTest {
 
     @Test
     void testDeleteUserPointFailure() throws Exception {
-        doThrow(new RuntimeException("Failure")).when(pointAccumulationHistoryService).deletePoint(anyLong());
+        doThrow(new RuntimeException("Failure")).when(pointAccumulationService).deletePoint(anyLong());
 
         mockMvc.perform(delete("/api/point/adminPage/delete/{id}", 1)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer test-token"))

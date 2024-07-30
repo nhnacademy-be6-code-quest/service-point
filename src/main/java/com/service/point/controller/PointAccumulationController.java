@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "PointAccumulation", description = "포인트 적립 관련 API")
-public interface PointAccumulationHistoryController {
+public interface PointAccumulationController {
     @Operation(
         summary = "결제시 포인트 적립",
         description = "Order - 사용자 포인트 적립",

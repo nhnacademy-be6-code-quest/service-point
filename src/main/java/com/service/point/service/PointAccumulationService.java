@@ -6,7 +6,7 @@ import com.service.point.dto.response.PointAccumulationMyPageResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 
-public interface PointAccumulationHistoryService {
+public interface PointAccumulationService {
 
     /**
      * 회원 아이디와 결제 금액을 받아 회원에게 포인트를 지급하는 함수

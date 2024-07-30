@@ -18,7 +18,7 @@ import com.service.point.exception.PointPolicyNotFoundException;
 import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
-import com.service.point.service.PointAccumulationHistoryService;
+import com.service.point.service.PointAccumulationService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class PointAccumulationHistoryServiceImpl implements PointAccumulationHistoryService {
+public class PointAccumulationServiceImpl implements PointAccumulationService {
 
     private final UserNameClient userNameClient;
     private final PointAccumulationHistoryRepository pointAccumulationHistoryRepository;
@@ -44,6 +44,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
     private final PointPolicyRepository pointPolicyRepository;
     private final ObjectMapper objectMapper;
     private final UserRankClient userRankClient;
+    private static final String NO_POINT_POLICY="포인트 정책을 찾을수 없습니다.";
 
     @Override
     public void orderPoint(HttpHeaders headers,
@@ -55,7 +56,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
         long clientId = NumberUtils.toLong(headers.getFirst(ID_HEADER));
         Long pointPolicyId = userRankClient.getClientGradeRate(clientId).getBody().getRatePolicyId();
 
-        PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId).orElseThrow(()-> new PointPolicyNotFoundException("포인트정책이 존재하지않습니다."));
+        PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId).orElseThrow(()-> new PointPolicyNotFoundException(NO_POINT_POLICY));
 
         Long pointAccumulation = Math.round(pointPolicyOrderResponseDto.getAccumulatedPoint() * (pointPolicy.getPointValue() * 0.01));
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
@@ -80,7 +81,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
                 "사진리뷰",
                 PointStatus.ACTIVATE);
             if (pointPolicy == null) {
-                throw new PointPolicyNotFoundException("포인트 정책이 존재하지 않습니다.");
+                throw new PointPolicyNotFoundException(NO_POINT_POLICY);
             }
             PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
                 pointPolicy, reviewMessageDto.getClientId(), pointPolicy.getPointValue());
@@ -117,7 +118,7 @@ public class PointAccumulationHistoryServiceImpl implements PointAccumulationHis
             );
 
         if (pointPolicy == null) {
-            throw new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다.");
+            throw new PointPolicyNotFoundException(NO_POINT_POLICY);
         }
         PointAccumulationHistory pointAccumulationHistory = new PointAccumulationHistory(
             pointPolicy,
