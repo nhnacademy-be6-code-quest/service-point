@@ -38,12 +38,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
         // When
         Long newValue = 200L;
-        LocalDate newExpirationDate = LocalDate.now().plusMonths(6);
         policy.setPointValue(newValue);
-        policy.setPointPolicyExpirationDate(newExpirationDate);
 
         // Then
-        assertEquals(newExpirationDate, policy.getPointPolicyExpirationDate());
+        assertEquals(newValue, policy.getPointValue());
     }
 
     // Additional tests can be added as needed
