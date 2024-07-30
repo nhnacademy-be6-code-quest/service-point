@@ -18,7 +18,7 @@ import com.service.point.exception.PointPolicyNotFoundException;
 import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
-import com.service.point.service.PointAccumulationHistoryService;
+import com.service.point.service.PointAccumulationService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class PointAccumulationHistoryServiceImpl implements PointAccumulationHistoryService {
+public class PointAccumulationServiceImpl implements PointAccumulationService {
 
     private final UserNameClient userNameClient;
     private final PointAccumulationHistoryRepository pointAccumulationHistoryRepository;

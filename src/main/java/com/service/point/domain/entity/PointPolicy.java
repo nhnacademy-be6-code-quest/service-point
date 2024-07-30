@@ -21,8 +21,7 @@ public class PointPolicy {
     @Setter
     private Long pointValue;
     private LocalDate pointPolicyCreationDate;
-    @Setter
-    private LocalDate pointPolicyExpirationDate;
+
     @Setter
     private PointStatus pointStatus;
 

@@ -31,7 +31,7 @@ import com.service.point.exception.PointPolicyNotFoundException;
 import com.service.point.exception.RabbitMessageConvertException;
 import com.service.point.repository.PointAccumulationHistoryRepository;
 import com.service.point.repository.PointPolicyRepository;
-import com.service.point.service.impl.PointAccumulationHistoryServiceImpl;
+import com.service.point.service.impl.PointAccumulationServiceImpl;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
@@ -64,7 +64,7 @@ class PointAccumulationHistoryServiceTest {
     private ObjectMapper objectMapper;
 
     @InjectMocks
-    private PointAccumulationHistoryServiceImpl pointAccumulationHistoryService;
+    private PointAccumulationServiceImpl pointAccumulationHistoryService;
 
     @BeforeEach
     void setUp() {
