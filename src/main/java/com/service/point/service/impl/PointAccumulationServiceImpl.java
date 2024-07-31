@@ -171,7 +171,7 @@ public class PointAccumulationServiceImpl implements PointAccumulationService {
             PointAccumulationMyPageResponseDto pointAccumulationMyPageResponseDto = new PointAccumulationMyPageResponseDto();
             PointPolicy pointPolicy = pointPolicyRepository.findById(
                     points.getPointPolicy().getPointPolicyId())
-                .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+                .orElseThrow(() -> new PointPolicyNotFoundException(NO_POINT_POLICY));
             pointAccumulationMyPageResponseDto.setPointAccumulationHistoryDate(
                 String.valueOf(points.getPointAccumulationHistoryDate()));
             pointAccumulationMyPageResponseDto.setPointAccumulationType(

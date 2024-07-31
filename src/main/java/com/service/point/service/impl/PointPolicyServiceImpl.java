@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class PointPolicyServiceImpl implements PointPolicyService {
 
     private final PointPolicyRepository pointPolicyRepository;
+    private static final String NO_POINT_POLICY="포인트 정책을 찾을수 없습니다.";
 
     @Override
     public void savePointPolicy(PointPolicyRegisterRequestDto pointPolicyRegisterRequestDto) {
@@ -54,7 +55,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public PointPolicyDetailResponseDto findPointPolicy(long pointPolicyId) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId)
-            .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+            .orElseThrow(() -> new PointPolicyNotFoundException(NO_POINT_POLICY));
         PointPolicyDetailResponseDto dto = new PointPolicyDetailResponseDto();
         dto.setPointValue(pointPolicy.getPointValue());
         dto.setPointAccumulationType(pointPolicy.getPointAccumulationType());
@@ -66,7 +67,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
         PointPolicy pointPolicy = pointPolicyRepository.findById(
                 pointPolicyModifyRequestDto.getPointPolicyId())
-            .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+            .orElseThrow(() -> new PointPolicyNotFoundException(NO_POINT_POLICY));
         pointPolicy.setPointValue(pointPolicyModifyRequestDto.getPointValue());
         pointPolicyRepository.save(pointPolicy);
     }
@@ -82,13 +83,13 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         }
         PointPolicy pointPolicyActive = pointPolicyRepository.findById(
                 pointPolicyActiveRequestDto.getPointPolicyId())
-            .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+            .orElseThrow(() -> new PointPolicyNotFoundException(NO_POINT_POLICY));
         pointPolicyActive.setPointStatus(PointStatus.ACTIVATE);
         pointPolicyRepository.save(pointPolicyActive);
     }
     @Override
     public ClientPointAccumulationResponseDto findByAccumulation(long pointPolicyId) {
-        PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId).orElseThrow(()-> new PointPolicyNotFoundException("포인트 정책을 찾을수 없습니다."));
+        PointPolicy pointPolicy = pointPolicyRepository.findById(pointPolicyId).orElseThrow(()-> new PointPolicyNotFoundException(NO_POINT_POLICY));
         ClientPointAccumulationResponseDto dto = new ClientPointAccumulationResponseDto();
         dto.setPointValue(pointPolicy.getPointValue());
         return dto;
