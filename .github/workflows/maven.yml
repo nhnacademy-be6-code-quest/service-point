@@ -10,9 +10,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "develop", "main" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "develop", "main" ]
+    branches: [ "main" ]
 
 
 jobs:
@@ -50,7 +50,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
-          script: "./point_startup.sh"
+          script: "./CD/main.sh 8010 10010 Point-0.0.1-SNAPSHOT.jar point_log"
+
 
       - name: Run SonarQube
         run: mvn sonar:sonar -Dsonar.projectKey=code-quest-service-point2 -Dsonar.projectName='code-quest-service-point2' -Dsonar.host.url=${{secrets.SONAR_HOST}} -Dsonar.token=${{secrets.SONAR_TOKEN}}
