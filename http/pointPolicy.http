@@ -1,0 +1,6 @@
+### GET request to example server
+GET http://localhost:8010/api/point/client/grade?pointPolicyId=1
+###
+
+GET http://localhost:8003/api/client/name?clientId=181
+X-User-Id:181

@@ -1,0 +1,36 @@
+### GET request to example server
+GET http://localhost:8010/api/point/adminPage/reward?page=0&size=1
+
+### GET
+GET http://localhost:8010/api/point/myPage/use?page=0&size=1
+X-User-Id:26
+
+
+###GET
+GET localhost:8010/api/point/policy?page=0&size=1
+
+###POST
+POST http://localhost:8010/api/point/order
+Content-Type: application/json
+X-User-Id:190
+
+{
+  "accumulatedPoint": 2000000000
+}
+###POSt
+POST http://localhost:8010/api/point/use/payment
+Content-Type: application/json
+X-User-Id:26
+
+{
+ "pointUsagePayment": 500000
+}
+
+###GET
+
+GET http://localhost:8010/api/point/myPage/use?page=0&size=1
+X-User-Id:26
+
+### GET
+GET localhost:8010/api/point
+X-User-Id:181
