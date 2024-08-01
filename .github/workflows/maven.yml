@@ -50,7 +50,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
-          script: "./CD/main.sh 8010 10010 Point-0.0.1-SNAPSHOT.jar point_log"
+          script: "./CD/main.sh 8010 10010 point-0.0.1-SNAPSHOT.jar point_log"
 
 
       - name: Run SonarQube
